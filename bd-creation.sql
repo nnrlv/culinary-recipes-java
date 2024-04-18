@@ -29,14 +29,14 @@ CREATE INDEX idx_user_ratings_clnr_nt_id ON user_ratings(culinary_note_id);
 
 CREATE TABLE ingredients (
 	ingredient_id SERIAL PRIMARY KEY,
-	name TEXT,
-	unit_of_measurement TEXT
+	name TEXT
 );
 
 CREATE TABLE ingredients_in_culinary_notes (
 	ingredient_id BIGINT REFERENCES ingredients(ingredient_id),
 	culinary_note_id BIGINT REFERENCES culinary_notes(culinary_note_id),
 	PRIMARY KEY(ingredient_id, culinary_note_id),
+	unit_of_measurement TEXT,
 	amount INTEGER
 );
 
