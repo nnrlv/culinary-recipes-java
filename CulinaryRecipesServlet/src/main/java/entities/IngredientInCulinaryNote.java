@@ -10,5 +10,5 @@ public class IngredientInCulinaryNote {
     Ingredient ingredient;
     CulinaryNote culinaryNote;
     UnitOfMeasurement unitOfMeasurement;
-    Integer amount;
+    float amount;
 }

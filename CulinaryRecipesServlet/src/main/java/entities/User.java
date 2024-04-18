@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 public class User {
     private Long idUser;
-    private UserRole role;
+    private final UserRole role;
     private String firstName;
     private String lastName;
     private String password;
