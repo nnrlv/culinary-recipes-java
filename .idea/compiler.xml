@@ -10,5 +10,8 @@
         <module name="CulinaryRecipesServlet" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="MeetingOrganizerServlet" target="20" />
+    </bytecodeTargetLevel>
   </component>
 </project>

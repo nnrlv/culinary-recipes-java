@@ -1,16 +1,14 @@
-package entities;
+package dto.culinarynote;
 
 import lombok.*;
-import java.util.List;
+import entities.User;
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class CulinaryNote {
-    private Long idCulinaryNote;
-    private List<Category> categories;
+public class CreateCulinaryNoteDto {
     private User user;
     private String name;
     private String description;

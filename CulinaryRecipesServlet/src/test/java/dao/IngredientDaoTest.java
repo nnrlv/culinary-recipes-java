@@ -1,4 +1,4 @@
-package daos;
+package dao;
 
 import entities.Ingredient;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,6 @@
-package daos;
+package dao;
 
+import utils.PasswordHasher;
 import entities.User;
 import entities.UserRole;
 import java.sql.*;
@@ -11,6 +12,7 @@ import utils.ConnectionManager;
 
 public class UserDao implements Dao<Long, User> {
 
+    private final PasswordHasher passwordHasher = new PasswordHasher();
     public static final String CREATE_USER = """
             INSERT INTO users(role, name, surname, password, email) 
             VALUES (?, ?, ?, ?, ?);
@@ -61,7 +63,7 @@ public class UserDao implements Dao<Long, User> {
             preparedStatement.setString(1, user.getRole().name());
             preparedStatement.setString(2, user.getFirstName());
             preparedStatement.setString(3, user.getLastName());
-            preparedStatement.setString(4, user.getPassword());
+            preparedStatement.setString(4, passwordHasher.hashPassword(user.getPassword()));
             preparedStatement.setString(5, user.getEmail());
             preparedStatement.executeUpdate();
             final ResultSet resultSet = preparedStatement.getGeneratedKeys();

@@ -1,9 +1,10 @@
-package daos;
+package dao;
 
 import entities.User;
 import entities.UserRole;
 import exceptions.EmailAlreadyTakenException;
 import org.junit.jupiter.api.*;
+import utils.PasswordHasher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserDaoTest {
 
     private final UserDao userDao = new UserDao();
+
+    private final PasswordHasher passwordHasher = new PasswordHasher();
 
     @Test
     void createNewUserTest() throws EmailAlreadyTakenException {
@@ -39,6 +42,9 @@ class UserDaoTest {
         userDao.create(user1);
         userDao.create(user2);
 
+        user1.setPassword(passwordHasher.hashPassword(user1.getPassword()));
+        user2.setPassword(passwordHasher.hashPassword(user2.getPassword()));
+
         List<User> usersFromDao = userDao.getAll();
 
         assertTrue(users.size() == usersFromDao.size() &&
@@ -54,6 +60,7 @@ class UserDaoTest {
         User user = userDao.create(new User(null, UserRole.USER, "test1", "test1",
                 "password1", "test2.test@example.com"));
         User found = userDao.getById(user.getIdUser());
+        user.setPassword(passwordHasher.hashPassword(user.getPassword()));
         assertEquals(user, found);
         userDao.delete(found.getIdUser());
     }
@@ -63,6 +70,7 @@ class UserDaoTest {
         User user = userDao.create(new User(null, UserRole.USER, "test1", "test1",
                 "password1", "test2.test@example.com"));
         User found = userDao.getByEmail(user.getEmail());
+        user.setPassword(passwordHasher.hashPassword(user.getPassword()));
         assertEquals(user, found);
         userDao.delete(found.getIdUser());
     }
@@ -77,6 +85,7 @@ class UserDaoTest {
 
         userDao.update(userToUpdate);
         User updatedUser = userDao.getById(userToUpdate.getIdUser());
+        userToUpdate.setPassword(passwordHasher.hashPassword(userToUpdate.getPassword()));
 
         assertEquals(updatedUser, userToUpdate);
         userDao.delete(userToUpdate.getIdUser());
