@@ -50,7 +50,7 @@
 </head>
 <body>
 <div class="form-container">
-    <h1>Welcome to Culinary Recipes Web App</h1><br/>
+    <h1>Culinary Notes Web App</h1><br/>
     <h1>Register</h1><br/>
     <form action="${pageContext.request.contextPath}/register" method="post">
         <label for="emailId">Email</label>

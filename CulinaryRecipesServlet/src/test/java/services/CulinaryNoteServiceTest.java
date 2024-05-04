@@ -1,6 +1,6 @@
 package services;
 
-import dao.CulinaryNoteDao;
+import repositories.CulinaryNoteRepository;
 import dto.culinarynote.CreateCulinaryNoteDto;
 import dto.culinarynote.CulinaryNoteDto;
 import dto.culinarynote.UpdateCulinaryNoteDto;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 public class CulinaryNoteServiceTest {
 
     @Mock
-    private CulinaryNoteDao culinaryNoteDao;
+    private CulinaryNoteRepository culinaryNoteRepository;
     @Mock
     private CreateCulinaryNoteMapper createCulinaryNoteMapper;
     @Mock
@@ -36,7 +36,7 @@ public class CulinaryNoteServiceTest {
         CreateCulinaryNoteDto createCulinaryNoteDto = new CreateCulinaryNoteDto();
         CulinaryNote culinaryNote = new CulinaryNote();
         when(createCulinaryNoteMapper.map(createCulinaryNoteDto)).thenReturn(culinaryNote);
-        when(culinaryNoteDao.create(culinaryNote)).thenReturn(culinaryNote);
+        when(culinaryNoteRepository.create(culinaryNote)).thenReturn(culinaryNote);
 
         CulinaryNote result = culinaryNoteService.create(createCulinaryNoteDto);
 
@@ -46,7 +46,7 @@ public class CulinaryNoteServiceTest {
     @Test
     void testGetAllCulinaryNotes() {
         List<CulinaryNote> culinaryNotes = List.of(new CulinaryNote());
-        when(culinaryNoteDao.getAll()).thenReturn(culinaryNotes);
+        when(culinaryNoteRepository.getAll()).thenReturn(culinaryNotes);
         when(culinaryNoteMapper.map(any())).thenReturn(new CulinaryNoteDto());
 
         List<CulinaryNoteDto> result = culinaryNoteService.getAll();
@@ -59,7 +59,7 @@ public class CulinaryNoteServiceTest {
         Long id = 1L;
         CulinaryNote culinaryNote = new CulinaryNote();
         CulinaryNoteDto culinaryNoteDto = new CulinaryNoteDto();
-        when(culinaryNoteDao.getById(id)).thenReturn(culinaryNote);
+        when(culinaryNoteRepository.getById(id)).thenReturn(culinaryNote);
         when(culinaryNoteMapper.map(culinaryNote)).thenReturn(culinaryNoteDto);
 
         CulinaryNoteDto result = culinaryNoteService.getById(id);
@@ -72,7 +72,7 @@ public class CulinaryNoteServiceTest {
         UpdateCulinaryNoteDto updateCulinaryNoteDto = new UpdateCulinaryNoteDto();
         CulinaryNote culinaryNote = new CulinaryNote();
         when(updateCulinaryNoteMapper.map(updateCulinaryNoteDto)).thenReturn(culinaryNote);
-        when(culinaryNoteDao.update(culinaryNote)).thenReturn(true);
+        when(culinaryNoteRepository.update(culinaryNote)).thenReturn(true);
 
         boolean result = culinaryNoteService.update(updateCulinaryNoteDto);
 
@@ -82,7 +82,7 @@ public class CulinaryNoteServiceTest {
     @Test
     void testDeleteCulinaryNote() {
         Long id = 1L;
-        when(culinaryNoteDao.delete(id)).thenReturn(true);
+        when(culinaryNoteRepository.delete(id)).thenReturn(true);
 
         boolean result = culinaryNoteService.delete(id);
 

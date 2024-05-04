@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import utils.PasswordHasher;
 import entities.User;
@@ -10,11 +10,11 @@ import java.util.List;
 import exceptions.EmailAlreadyTakenException;
 import utils.ConnectionManager;
 
-public class UserDao implements Dao<Long, User> {
+public class UserRepository implements Repository<Long, User> {
 
     private final PasswordHasher passwordHasher = new PasswordHasher();
     public static final String CREATE_USER = """
-            INSERT INTO users(role, name, surname, password, email) 
+            INSERT INTO users(role, name, surname, password, email)
             VALUES (?, ?, ?, ?, ?);
             """;
 

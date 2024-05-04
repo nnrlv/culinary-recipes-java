@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import entities.CulinaryNote;
 import entities.User;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import utils.ConnectionManager;
 
-public class UserRatingDao {
+public class UserRatingRepository {
 
     public static final String CREATE_USER_RATING = """
             INSERT INTO user_ratings(user_id, culinary_note_id, grade, comment) 
@@ -68,11 +68,11 @@ public class UserRatingDao {
     }
 
     private UserRating buildUserRatingEntity(ResultSet resultSet) throws SQLException {
-        UserDao userDao = new UserDao();
+        UserRepository userDao = new UserRepository();
         User user = userDao.getById(resultSet.getLong("user_id"));
 
-        CulinaryNoteDao culinaryNoteDao = new CulinaryNoteDao();
-        CulinaryNote culinaryNote = culinaryNoteDao.getById(resultSet.getLong("culinary_note_id"));
+        CulinaryNoteRepository culinaryNoteRepository = new CulinaryNoteRepository();
+        CulinaryNote culinaryNote = culinaryNoteRepository.getById(resultSet.getLong("culinary_note_id"));
 
         return new UserRating(
                 user,

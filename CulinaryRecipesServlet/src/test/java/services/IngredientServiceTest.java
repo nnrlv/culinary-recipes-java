@@ -1,6 +1,6 @@
 package services;
 
-import dao.IngredientDao;
+import repositories.IngredientRepository;
 import dto.ingredient.CreateIngredientDto;
 import dto.ingredient.IngredientDto;
 import entities.Ingredient;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class IngredientServiceTest {
 
     @Mock
-    private IngredientDao ingredientDao;
+    private IngredientRepository ingredientRepository;
     @Mock
     private IngredientMapper ingredientMapper;
     @Mock
@@ -35,7 +35,7 @@ public class IngredientServiceTest {
         Ingredient ingredient = getIngredient();
 
         when(createIngredientMapper.map(createIngredientDto)).thenReturn(ingredient);
-        when(ingredientDao.create(ingredient)).thenReturn(ingredient);
+        when(ingredientRepository.create(ingredient)).thenReturn(ingredient);
 
         Ingredient result = ingredientService.create(createIngredientDto);
 
@@ -48,7 +48,7 @@ public class IngredientServiceTest {
         List<Ingredient> ingredients = List.of(ingredient);
         IngredientDto ingredientDto = getIngredientDto();
 
-        when(ingredientDao.getAll()).thenReturn(ingredients);
+        when(ingredientRepository.getAll()).thenReturn(ingredients);
         when(ingredientMapper.map(ingredient)).thenReturn(ingredientDto);
 
         assertThat(ingredientService.getAll()).hasSize(1);
@@ -62,7 +62,7 @@ public class IngredientServiceTest {
         Long id = ingredient.getIdIngredient();
 
         when(ingredientMapper.map(ingredient)).thenReturn(ingredientDto);
-        when(ingredientDao.getById(id)).thenReturn(ingredient);
+        when(ingredientRepository.getById(id)).thenReturn(ingredient);
 
         assertThat(ingredientService.getById(id)).isEqualTo(ingredientDto);
     }
@@ -70,7 +70,7 @@ public class IngredientServiceTest {
     @Test
     void getByIdTest_IngredientDoesntExist() {
         Long id = 999L;
-        when(ingredientDao.getById(id)).thenReturn(null);
+        when(ingredientRepository.getById(id)).thenReturn(null);
         assertThat(ingredientService.getById(id)).isNull();
     }
 
@@ -80,7 +80,7 @@ public class IngredientServiceTest {
         Ingredient ingredient = getIngredient();
 
         when(ingredientMapper.map(ingredientDto)).thenReturn(ingredient);
-        when(ingredientDao.update(ingredient)).thenReturn(true);
+        when(ingredientRepository.update(ingredient)).thenReturn(true);
 
         assertThat(ingredientService.update(ingredientDto)).isTrue();
     }
@@ -88,14 +88,14 @@ public class IngredientServiceTest {
     @Test
     void deleteIngredientTest_IngredientExists() {
         Long id = 777L;
-        when(ingredientDao.delete(id)).thenReturn(true);
+        when(ingredientRepository.delete(id)).thenReturn(true);
         assertThat(ingredientService.delete(id)).isTrue();
     }
 
     @Test
     void deleteIngredientTest_IngredientDoesntExist() {
         Long id = 666L;
-        when(ingredientDao.delete(id)).thenReturn(false);
+        when(ingredientRepository.delete(id)).thenReturn(false);
         assertThat(ingredientService.delete(id)).isFalse();
     }
 

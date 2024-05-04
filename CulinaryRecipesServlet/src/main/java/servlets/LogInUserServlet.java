@@ -1,6 +1,6 @@
 package servlets;
 
-import dao.UserDao;
+import repositories.UserRepository;
 import dto.user.UserDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,11 +16,12 @@ import utils.PasswordHasher;
 import java.io.IOException;
 import java.util.Objects;
 
+import static utils.UrlPathHelper.CULINARY_NOTES;
 import static utils.UrlPathHelper.LOGIN;
 
 @WebServlet(LOGIN)
 public class LogInUserServlet extends HttpServlet {
-    private final UserService userService = new UserService(new UserDao(), new UserMapper(), new CreateUserMapper());
+    private final UserService userService = new UserService(new UserRepository(), new UserMapper(), new CreateUserMapper());
 
     private final PasswordHasher passwordHasher = new PasswordHasher();
     @Override
@@ -40,6 +41,7 @@ public class LogInUserServlet extends HttpServlet {
             UserDto user = userService.getByEmail(email);
             if (passwordHasher.checkPassword(password, user.getPassword())) {
                 req.getSession().setAttribute("user", user);
+                resp.sendRedirect(req.getContextPath() + CULINARY_NOTES);
             }
             else
             {

@@ -1,6 +1,6 @@
 package services;
 
-import dao.UserDao;
+import repositories.UserRepository;
 import dto.user.CreateUserDto;
 import dto.user.UserDto;
 import entities.User;
@@ -12,25 +12,25 @@ import java.util.List;
 
 @AllArgsConstructor
 public class UserService {
-    private final UserDao userDao;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final CreateUserMapper createUserMapper;
     public User create(CreateUserDto userDto) throws EmailAlreadyTakenException {
-        return userDao.create(createUserMapper.map(userDto));
+        return userRepository.create(createUserMapper.map(userDto));
     }
     public List<UserDto> getAll() {
-        return userDao.getAll().stream().map(userMapper::map).toList();
+        return userRepository.getAll().stream().map(userMapper::map).toList();
     }
     public UserDto getByEmail(String email) {
         if (email.isEmpty()) {
             throw new IllegalArgumentException("Email can't empty");
         }
-        return userMapper.map(userDao.getByEmail(email));
+        return userMapper.map(userRepository.getByEmail(email));
     }
     public void updateUser(UserDto userDto) {
-        userDao.update(userMapper.map(userDto));
+        userRepository.update(userMapper.map(userDto));
     }
     public boolean delete(Long id) {
-        return userDao.delete(id);
+        return userRepository.delete(id);
     }
 }

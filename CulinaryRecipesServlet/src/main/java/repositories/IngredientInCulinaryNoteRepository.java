@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import entities.CulinaryNote;
 import entities.Ingredient;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import utils.ConnectionManager;
 
-public class IngredientInCulinaryNoteDao {
+public class IngredientInCulinaryNoteRepository {
 
     public static final String CREATE_INGREDIENT_IN_CULINARY_NOTE = """
             INSERT INTO ingredients_in_culinary_notes(ingredient_id, culinary_note_id, unit_of_measurement, amount) 
@@ -33,7 +33,7 @@ public class IngredientInCulinaryNoteDao {
             preparedStatement.setLong(1, ingredientInCulinaryNote.getIngredient().getIdIngredient());
             preparedStatement.setLong(2, ingredientInCulinaryNote.getCulinaryNote().getIdCulinaryNote());
             preparedStatement.setString(3, ingredientInCulinaryNote.getUnitOfMeasurement().name());
-            preparedStatement.setFloat(4, ingredientInCulinaryNote.getAmount());
+            preparedStatement.setDouble(4, ingredientInCulinaryNote.getAmount());
             preparedStatement.executeUpdate();
             return ingredientInCulinaryNote;
         } catch (SQLException e) {
@@ -68,11 +68,11 @@ public class IngredientInCulinaryNoteDao {
     }
 
     private IngredientInCulinaryNote buildIngredientInCulinaryNoteEntity(ResultSet resultSet) throws SQLException {
-        IngredientDao ingredientDao = new IngredientDao();
+        IngredientRepository ingredientDao = new IngredientRepository();
         Ingredient ingredient = ingredientDao.getById(resultSet.getLong("ingredient_id"));
 
-        CulinaryNoteDao culinaryNoteDao = new CulinaryNoteDao();
-        CulinaryNote culinaryNote = culinaryNoteDao.getById(resultSet.getLong("culinary_note_id"));
+        CulinaryNoteRepository culinaryNoteRepository = new CulinaryNoteRepository();
+        CulinaryNote culinaryNote = culinaryNoteRepository.getById(resultSet.getLong("culinary_note_id"));
 
         UnitOfMeasurement unitOfMeasurement = UnitOfMeasurement.valueOf(resultSet.getString("unit_of_measurement"));
 

@@ -1,5 +1,7 @@
-package entities;
+package dto.userrating;
 
+import entities.CulinaryNote;
+import entities.User;
 import lombok.*;
 @Getter
 @Setter
@@ -7,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class UserRating {
+public class UserRatingDto {
     User user;
     CulinaryNote culinaryNote;
     Short grade;

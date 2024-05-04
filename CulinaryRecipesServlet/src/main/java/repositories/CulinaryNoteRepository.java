@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import entities.Category;
 import entities.CulinaryNote;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import utils.ConnectionManager;
 
-public class CulinaryNoteDao implements Dao<Long, CulinaryNote> {
+public class CulinaryNoteRepository implements Repository<Long, CulinaryNote> {
 
     public static final String CREATE_CULINARY_NOTE = """
             INSERT INTO culinary_notes(category, user_id, name, description, instructions) 
@@ -130,7 +130,7 @@ public class CulinaryNoteDao implements Dao<Long, CulinaryNote> {
     }
 
     private CulinaryNote buildCulinaryNoteEntity(ResultSet resultSet) throws SQLException {
-        UserDao userDao = new UserDao();
+        UserRepository userDao = new UserRepository();
         User user = userDao.getById(resultSet.getLong("user_id"));
         List<String> categoriesList = Arrays.asList(resultSet.getString("category").split(","));
         List<Category> categories = new ArrayList<>();

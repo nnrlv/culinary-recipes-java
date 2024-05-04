@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import entities.User;
 import entities.UserRole;
@@ -11,9 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserDaoTest {
+class UserRepositoryTest {
 
-    private final UserDao userDao = new UserDao();
+    private final UserRepository userRepository = new UserRepository();
 
     private final PasswordHasher passwordHasher = new PasswordHasher();
 
@@ -22,10 +22,10 @@ class UserDaoTest {
         User user = new User(null, UserRole.USER, "Test", "Test",
                 "password", "test.test@example.com");
 
-        User userFromDao = userDao.create(user);
+        User userFromRepository = userRepository.create(user);
 
-        assertEquals(user, userFromDao);
-        userDao.delete(userFromDao.getIdUser());
+        assertEquals(user, userFromRepository);
+        userRepository.delete(userFromRepository.getIdUser());
     }
 
     @Test
@@ -39,64 +39,64 @@ class UserDaoTest {
         users.add(user1);
         users.add(user2);
 
-        userDao.create(user1);
-        userDao.create(user2);
+        userRepository.create(user1);
+        userRepository.create(user2);
 
         user1.setPassword(passwordHasher.hashPassword(user1.getPassword()));
         user2.setPassword(passwordHasher.hashPassword(user2.getPassword()));
 
-        List<User> usersFromDao = userDao.getAll();
+        List<User> usersFromRepository = userRepository.getAll();
 
-        assertTrue(users.size() == usersFromDao.size() &&
-                usersFromDao.containsAll(users) && users.containsAll(usersFromDao));
+        assertTrue(users.size() == usersFromRepository.size() &&
+                usersFromRepository.containsAll(users) && users.containsAll(usersFromRepository));
 
         for (User user : users) {
-            userDao.delete(user.getIdUser());
+            userRepository.delete(user.getIdUser());
         }
     }
 
     @Test
     void GetUserByIdTest() throws EmailAlreadyTakenException {
-        User user = userDao.create(new User(null, UserRole.USER, "test1", "test1",
+        User user = userRepository.create(new User(null, UserRole.USER, "test1", "test1",
                 "password1", "test2.test@example.com"));
-        User found = userDao.getById(user.getIdUser());
+        User found = userRepository.getById(user.getIdUser());
         user.setPassword(passwordHasher.hashPassword(user.getPassword()));
         assertEquals(user, found);
-        userDao.delete(found.getIdUser());
+        userRepository.delete(found.getIdUser());
     }
 
     @Test
     void GetUserByEmailTest() throws EmailAlreadyTakenException {
-        User user = userDao.create(new User(null, UserRole.USER, "test1", "test1",
+        User user = userRepository.create(new User(null, UserRole.USER, "test1", "test1",
                 "password1", "test2.test@example.com"));
-        User found = userDao.getByEmail(user.getEmail());
+        User found = userRepository.getByEmail(user.getEmail());
         user.setPassword(passwordHasher.hashPassword(user.getPassword()));
         assertEquals(user, found);
-        userDao.delete(found.getIdUser());
+        userRepository.delete(found.getIdUser());
     }
 
     @Test
     void updateUserTest() throws EmailAlreadyTakenException {
         User userToUpdate = new User(null, UserRole.USER, "test1", "test1",
                 "password1", "test1.test@example.com");
-        userDao.create(userToUpdate);
+        userRepository.create(userToUpdate);
 
         userToUpdate.setPassword("new");
 
-        userDao.update(userToUpdate);
-        User updatedUser = userDao.getById(userToUpdate.getIdUser());
+        userRepository.update(userToUpdate);
+        User updatedUser = userRepository.getById(userToUpdate.getIdUser());
         userToUpdate.setPassword(passwordHasher.hashPassword(userToUpdate.getPassword()));
 
         assertEquals(updatedUser, userToUpdate);
-        userDao.delete(userToUpdate.getIdUser());
+        userRepository.delete(userToUpdate.getIdUser());
     }
 
     @Test
     void deleteUserTest() throws EmailAlreadyTakenException {
-        User user = userDao.create(new User(null, UserRole.USER, "test1", "test1",
+        User user = userRepository.create(new User(null, UserRole.USER, "test1", "test1",
                 "password1", "test1.test@example.com"));
 
-        userDao.delete(user.getIdUser());
-        assertNull(userDao.getById(user.getIdUser()));
+        userRepository.delete(user.getIdUser());
+        assertNull(userRepository.getById(user.getIdUser()));
     }
 }

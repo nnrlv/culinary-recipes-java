@@ -1,6 +1,6 @@
 package services;
 
-import dao.IngredientDao;
+import repositories.IngredientRepository;
 import dto.ingredient.CreateIngredientDto;
 import dto.ingredient.IngredientDto;
 import entities.Ingredient;
@@ -12,27 +12,27 @@ import java.util.List;
 
 @AllArgsConstructor
 public class IngredientService {
-    private final IngredientDao ingredientDao;
+    private final IngredientRepository ingredientRepository;
     private final IngredientMapper ingredientMapper;
     private final CreateIngredientMapper createIngredientMapper;
 
     public Ingredient create(CreateIngredientDto ingredientDto) {
-        return ingredientDao.create(createIngredientMapper.map(ingredientDto));
+        return ingredientRepository.create(createIngredientMapper.map(ingredientDto));
     }
 
     public List<IngredientDto> getAll() {
-        return ingredientDao.getAll().stream().map(ingredientMapper::map).toList();
+        return ingredientRepository.getAll().stream().map(ingredientMapper::map).toList();
     }
 
     public IngredientDto getById(Long id) {
-        return ingredientMapper.map(ingredientDao.getById(id));
+        return ingredientMapper.map(ingredientRepository.getById(id));
     }
 
     public boolean update(IngredientDto ingredientDto) {
-        return ingredientDao.update(ingredientMapper.map(ingredientDto));
+        return ingredientRepository.update(ingredientMapper.map(ingredientDto));
     }
 
     public boolean delete(Long id) {
-        return ingredientDao.delete(id);
+        return ingredientRepository.delete(id);
     }
 }

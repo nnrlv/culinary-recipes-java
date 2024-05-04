@@ -1,6 +1,6 @@
 package services;
 
-import dao.UserDao;
+import repositories.UserRepository;
 import dto.user.CreateUserDto;
 import dto.user.UserDto;
 import entities.UserRole;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
     @Mock
-    private UserDao userDao;
+    private UserRepository userRepository;
     @Mock
     private UserMapper userMapper;
     @Mock
@@ -36,7 +36,7 @@ public class UserServiceTest {
         User user = getUser();
 
         when(createUserMapper.map(createUserDto)).thenReturn(user);
-        when(userDao.create(user)).thenReturn(user);
+        when(userRepository.create(user)).thenReturn(user);
 
         User result = userService.create(createUserDto);
 
@@ -49,7 +49,7 @@ public class UserServiceTest {
         User user = getUser();
 
         when(createUserMapper.map(createUserDto)).thenReturn(user);
-        when(userDao.create(user)).thenThrow(EmailAlreadyTakenException.class);
+        when(userRepository.create(user)).thenThrow(EmailAlreadyTakenException.class);
 
         EmailAlreadyTakenException exception = assertThrows(EmailAlreadyTakenException.class,
                 () -> userService.create(createUserDto));
@@ -61,7 +61,7 @@ public class UserServiceTest {
         User user = getUser();
         String email = user.getEmail();
         when(userMapper.map(user)).thenReturn(userDto);
-        when(userDao.getByEmail(email)).thenReturn(user);
+        when(userRepository.getByEmail(email)).thenReturn(user);
 
         assertThat(userService.getByEmail(email)).isEqualTo(userDto);
     }
@@ -70,7 +70,7 @@ public class UserServiceTest {
     void getByEmailTest_UserDoesntExist() {
         User user = getUser();
         String email = user.getEmail();
-        when(userDao.getByEmail(email)).thenReturn(null);
+        when(userRepository.getByEmail(email)).thenReturn(null);
         assertThat(userService.getByEmail(email)).isEqualTo(null);
     }
     @Test
@@ -79,7 +79,7 @@ public class UserServiceTest {
         List<User> users = List.of(user);
         UserDto userDto = getUserDto();
 
-        when(userDao.getAll())
+        when(userRepository.getAll())
                 .thenReturn(users);
         when(userMapper.map(user))
                 .thenReturn(userDto);
@@ -92,7 +92,7 @@ public class UserServiceTest {
 
     @Test
     void getAllUsersTest_UsersEmpty() {
-        when(userDao.getAll())
+        when(userRepository.getAll())
                 .thenReturn(null);
         NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> userService.getAll());
@@ -101,13 +101,13 @@ public class UserServiceTest {
     @Test
     void deleteUserTest_UserExists() {
         Long id = 777L;
-        when(userDao.delete(id)).thenReturn(true);
+        when(userRepository.delete(id)).thenReturn(true);
         assertThat(userService.delete(id)).isEqualTo(true);
     }
     @Test
     void deleteUserTest_UserDoesntExist() {
         Long id = 666L;
-        when(userDao.delete(id)).thenReturn(false);
+        when(userRepository.delete(id)).thenReturn(false);
         assertThat(userService.delete(id)).isEqualTo(false);
     }
 

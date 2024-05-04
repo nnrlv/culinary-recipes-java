@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import entities.Ingredient;
 import java.sql.*;
@@ -7,7 +7,7 @@ import java.util.List;
 
 import utils.ConnectionManager;
 
-public class IngredientDao implements Dao<Long, Ingredient> {
+public class IngredientRepository implements Repository<Long, Ingredient> {
 
     public static final String CREATE_INGREDIENT = """
             INSERT INTO ingredients(name)

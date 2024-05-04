@@ -1,10 +1,10 @@
-package dao;
+package repositories;
 
 import exceptions.EmailAlreadyTakenException;
 
 import java.util.List;
 
-public interface Dao<K, E> {
+public interface Repository<K, E> {
     E create(E entity) throws EmailAlreadyTakenException;
 
     E getById(K id);

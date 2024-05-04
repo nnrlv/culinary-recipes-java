@@ -1,6 +1,6 @@
 package servlets;
 
-import dao.UserDao;
+import repositories.UserRepository;
 import dto.user.CreateUserDto;
 import entities.User;
 import exceptions.EmailAlreadyTakenException;
@@ -22,7 +22,7 @@ import static utils.UrlPathHelper.LOGIN;
 @WebServlet(REGISTER)
 public class RegisterUserServlet extends HttpServlet {
     private static final UserService userService = new UserService(
-            new UserDao(),
+            new UserRepository(),
             new UserMapper(),
             new CreateUserMapper()
     );
