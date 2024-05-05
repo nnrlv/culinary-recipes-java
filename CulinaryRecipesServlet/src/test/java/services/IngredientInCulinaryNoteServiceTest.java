@@ -1,11 +1,9 @@
 package services;
 
+import dto.IngredientInCulinaryNoteDto;
 import repositories.IngredientInCulinaryNoteRepository;
-import dto.ingredientinculinarynote.CreateIngredientInCulinaryNoteDto;
 import entities.IngredientInCulinaryNote;
-import dto.ingredientinculinarynote.IngredientInCulinaryNoteDto;
-import mappers.ingredientinculinarynote.CreateIngredientInCulinaryNoteMapper;
-import mappers.ingredientinculinarynote.IngredientInCulinaryNoteMapper;
+import mappers.IngredientInCulinaryNoteMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,17 +19,15 @@ public class IngredientInCulinaryNoteServiceTest {
     @Mock
     private IngredientInCulinaryNoteRepository ingredientInCulinaryNoteRepository;
     @Mock
-    private CreateIngredientInCulinaryNoteMapper createIngredientInCulinaryNoteMapper;
-    @Mock
     private IngredientInCulinaryNoteMapper ingredientInCulinaryNoteMapper;
     @InjectMocks
     private IngredientInCulinaryNoteService ingredientInCulinaryNoteService;
 
     @Test
     void testCreateIngredientInCulinaryNote() {
-        CreateIngredientInCulinaryNoteDto createIngredientInCulinaryNoteDto = new CreateIngredientInCulinaryNoteDto();
+        IngredientInCulinaryNoteDto createIngredientInCulinaryNoteDto = new IngredientInCulinaryNoteDto();
         IngredientInCulinaryNote ingredientInCulinaryNote = new IngredientInCulinaryNote();
-        when(createIngredientInCulinaryNoteMapper.map(createIngredientInCulinaryNoteDto))
+        when(ingredientInCulinaryNoteMapper.map(createIngredientInCulinaryNoteDto))
                 .thenReturn(ingredientInCulinaryNote);
         when(ingredientInCulinaryNoteRepository.create(ingredientInCulinaryNote)).thenReturn(ingredientInCulinaryNote);
 
@@ -46,7 +42,7 @@ public class IngredientInCulinaryNoteServiceTest {
         List<IngredientInCulinaryNote> ingredientInCulinaryNotes = List.of(new IngredientInCulinaryNote());
         when(ingredientInCulinaryNoteRepository.getAllByCulinaryNoteId(idCulinaryNote))
                 .thenReturn(ingredientInCulinaryNotes);
-        when(ingredientInCulinaryNoteMapper.map(any())).thenReturn(new IngredientInCulinaryNoteDto());
+        when(ingredientInCulinaryNoteMapper.map(any(IngredientInCulinaryNote.class))).thenReturn(new IngredientInCulinaryNoteDto());
 
         List<IngredientInCulinaryNoteDto> result = ingredientInCulinaryNoteService.getAllByCulinaryNoteId(idCulinaryNote);
 

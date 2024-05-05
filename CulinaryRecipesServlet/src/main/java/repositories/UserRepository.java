@@ -10,8 +10,11 @@ import java.util.List;
 import exceptions.EmailAlreadyTakenException;
 import utils.ConnectionManager;
 
-public class UserRepository implements Repository<Long, User> {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+public class UserRepository {
+    private static final Logger logger = LogManager.getLogger(UserRepository.class);
     private final PasswordHasher passwordHasher = new PasswordHasher();
     public static final String CREATE_USER = """
             INSERT INTO users(role, name, surname, password, email)
@@ -50,8 +53,7 @@ public class UserRepository implements Repository<Long, User> {
             WHERE user_id = ?
             """;
 
-    @Override
-    public User create(User user) throws EmailAlreadyTakenException {
+    public boolean create(User user) throws EmailAlreadyTakenException {
 
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_USER,
@@ -65,18 +67,13 @@ public class UserRepository implements Repository<Long, User> {
             preparedStatement.setString(3, user.getLastName());
             preparedStatement.setString(4, passwordHasher.hashPassword(user.getPassword()));
             preparedStatement.setString(5, user.getEmail());
-            preparedStatement.executeUpdate();
-            final ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if (resultSet.next()) {
-                user.setIdUser((long) resultSet.getObject(1, Integer.class));
-            }
-            return user;
+            return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    @Override
     public List<User> getAll() {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_USERS)) {
@@ -87,11 +84,11 @@ public class UserRepository implements Repository<Long, User> {
             }
             return result;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    @Override
     public User getById(Long id) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_BY_ID)) {
@@ -102,6 +99,7 @@ public class UserRepository implements Repository<Long, User> {
             }
             return null;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -116,11 +114,11 @@ public class UserRepository implements Repository<Long, User> {
             }
             return null;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    @Override
     public boolean update(User user) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER)) {
@@ -132,17 +130,18 @@ public class UserRepository implements Repository<Long, User> {
             preparedStatement.setLong(6, user.getIdUser());
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    @Override
     public boolean delete(Long id) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_USER)) {
             preparedStatement.setObject(1, id);
             return preparedStatement.executeUpdate() > 0;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }

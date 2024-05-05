@@ -2,6 +2,9 @@ package entities;
 
 import lombok.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @ToString
@@ -15,5 +18,11 @@ public enum UnitOfMeasurement {
     CUP,
     PIECE,
     PINCH,
-    DASH
+    DASH;
+
+    public static List<String> getAllNames() {
+        return Arrays.stream(UnitOfMeasurement.values())
+                .map(Enum::name)
+                .toList();
+    }
 }

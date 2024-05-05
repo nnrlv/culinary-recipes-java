@@ -2,21 +2,18 @@ package services;
 
 import entities.IngredientInCulinaryNote;
 import repositories.IngredientInCulinaryNoteRepository;
-import dto.ingredientinculinarynote.IngredientInCulinaryNoteDto;
-import dto.ingredientinculinarynote.CreateIngredientInCulinaryNoteDto;
+import dto.IngredientInCulinaryNoteDto;
 import lombok.AllArgsConstructor;
-import mappers.ingredientinculinarynote.IngredientInCulinaryNoteMapper;
-import mappers.ingredientinculinarynote.CreateIngredientInCulinaryNoteMapper;
+import mappers.IngredientInCulinaryNoteMapper;
 import java.util.List;
 
 @AllArgsConstructor
 public class IngredientInCulinaryNoteService {
     private final IngredientInCulinaryNoteRepository ingredientInCulinaryNoteRepository;
-    private final CreateIngredientInCulinaryNoteMapper createIngredientInCulinaryNoteMapper;
     private final IngredientInCulinaryNoteMapper ingredientInCulinaryNoteMapper;
 
-    public IngredientInCulinaryNote create(CreateIngredientInCulinaryNoteDto createIngredientInCulinaryNoteDto) {
-        return ingredientInCulinaryNoteRepository.create(createIngredientInCulinaryNoteMapper
+    public IngredientInCulinaryNote create(IngredientInCulinaryNoteDto createIngredientInCulinaryNoteDto) {
+        return ingredientInCulinaryNoteRepository.create(ingredientInCulinaryNoteMapper
                 .map(createIngredientInCulinaryNoteDto));
     }
 

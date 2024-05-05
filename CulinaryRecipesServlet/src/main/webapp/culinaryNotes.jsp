@@ -79,13 +79,21 @@
     </c:choose>
 </div>
 
-<h2>All Available Culinary Notes</h2><br/>
-
-<c:if test="${sessionScope.user.role == 'USER'}">
-    <form action="${pageContext.request.contextPath}/addCulinaryNote" method="get">
-        <button type="submit" class="add-button">Add Recipe</button>
+<c:if test="${sessionScope.user.role == 'ADMIN'}">
+    <form action="${pageContext.request.contextPath}/ingredients" method="get">
+        <button type="submit" class="add-button">List of Ingredients</button>
     </form>
 </c:if>
+
+<h2>All Available Culinary Notes</h2><br/>
+
+<c:choose>
+    <c:when test="${not empty sessionScope.user}">
+        <form action="${pageContext.request.contextPath}/createCulinaryNote" method="get">
+            <button type="submit" class="add-button">Add Recipe</button>
+        </form>
+    </c:when>
+</c:choose>
 
 <c:choose>
     <c:when test="${not empty requestScope.culinaryNotes}">
@@ -93,16 +101,31 @@
             <div class="culinaryNote-item">
                 <ul>
                     <li>Name: <c:out value="${culinaryNote.name}"/></li>
+                    <li>Ingredients:
+                                    <ul>
+                                        <c:forEach var="ingredientInCulinaryNote" items="${culinaryNote.ingredientsInCulinaryNote}">
+                                            <li>
+                                                Ingredient: <c:out value="${ingredientInCulinaryNote.ingredient.name}"/>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                    </li>
                     <li>Description: <c:out value="${culinaryNote.description}"/></li>
                     <li>Instructions: <c:out value="${culinaryNote.instructions}"/></li>
+                    <li>Categories:
+                                    <c:forEach var="category" items="${culinaryNote.categories}">
+                                        <c:out value="${category}"/>
+                                    </c:forEach>
+                    </li>
                 </ul>
-                <!-- Additional actions for administrators -->
-                <c:if test="${sessionScope.user.role == 'ADMIN'}">
+                <c:if test="${sessionScope.user.role == 'ADMIN' || sessionScope.user.idUser == culinaryNote.user.idUser}">
                     <form action="${pageContext.request.contextPath}/updateCulinaryNote" method="get">
-                        <button type="submit" class="change-button" name="id" value="${culinaryNote.idCulinaryNote}">Update</button>
+                        <button type="submit" class="change-button" name="name" value="${culinaryNote.name}">Update</button>
                     </form>
-                    <form action="${pageContext.request.contextPath}/deleteCulinaryNote" method="get">
-                        <button type="submit" class="delete-button" name="id" value="${culinaryNote.idCulinaryNote}">Delete</button>
+                    <form action="${pageContext.request.contextPath}/culinaryNotes" method="post">
+                        <input type="hidden" name="action" value="delete"/>
+                        <input type="hidden" name="idCulinaryNote" value="${culinaryNote.idCulinaryNote}"/>
+                        <input type="submit" value="Delete"/>
                     </form>
                 </c:if>
             </div>

@@ -1,4 +1,4 @@
-package dto.ingredient;
+package dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class CreateIngredientDto {
+public class IngredientDto {
+    Long idIngredient;
     String name;
 }

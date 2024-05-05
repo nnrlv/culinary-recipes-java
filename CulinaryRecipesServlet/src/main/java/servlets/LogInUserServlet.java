@@ -1,14 +1,13 @@
 package servlets;
 
 import repositories.UserRepository;
-import dto.user.UserDto;
+import dto.UserDto;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import mappers.user.CreateUserMapper;
-import mappers.user.UserMapper;
+import mappers.UserMapper;
 import services.UserService;
 import utils.JspHelper;
 import utils.PasswordHasher;
@@ -16,12 +15,17 @@ import utils.PasswordHasher;
 import java.io.IOException;
 import java.util.Objects;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import static utils.UrlPathHelper.CULINARY_NOTES;
 import static utils.UrlPathHelper.LOGIN;
 
+
 @WebServlet(LOGIN)
 public class LogInUserServlet extends HttpServlet {
-    private final UserService userService = new UserService(new UserRepository(), new UserMapper(), new CreateUserMapper());
+    private  final Logger logger = LogManager.getLogger(HttpServlet.class);
+    private final UserService userService = new UserService(new UserRepository(), new UserMapper());
 
     private final PasswordHasher passwordHasher = new PasswordHasher();
     @Override
@@ -48,6 +52,7 @@ public class LogInUserServlet extends HttpServlet {
                 throw new ServletException("Wrong email or password.");
             }
         } catch (Exception e) {
+            logger.error(e.getMessage());
             req.setAttribute("message", e.getMessage());
             req.getRequestDispatcher(JspHelper.get("login")).forward(req, resp);
         }

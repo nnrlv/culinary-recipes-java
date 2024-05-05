@@ -20,8 +20,10 @@ public class CulinaryNoteRepositoryTest {
 
     @Test
     void createNewCulinaryNoteTest() throws EmailAlreadyTakenException {
-        User user = userRepository.create(new User(null, UserRole.USER, "Test", "User",
-                "password", "test.user@example.com"));
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote = new CulinaryNote(null, Arrays.asList(Category.APPETIZER, Category.DESSERT),
                 user, "Test Culinary Note", "Description", "Instructions");
@@ -35,8 +37,10 @@ public class CulinaryNoteRepositoryTest {
 
     @Test
     void getAllCulinaryNotesTest() throws EmailAlreadyTakenException {
-        User user = userRepository.create(new User(null, UserRole.USER, "Test", "User",
-                "password", "test.user@example.com"));
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test10.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote1 = culinaryNoteRepository.create(new CulinaryNote(null, Arrays.asList(Category.APPETIZER),
                 user, "Culinary Note 1", "Description", "Instructions"));
@@ -62,8 +66,10 @@ public class CulinaryNoteRepositoryTest {
 
     @Test
     void getCulinaryNoteByIdTest() throws EmailAlreadyTakenException {
-        User user = userRepository.create(new User(null, UserRole.USER, "Test", "User",
-                "password", "test.user@example.com"));
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote = culinaryNoteRepository.create(new CulinaryNote(null, Arrays.asList(Category.APPETIZER),
                 user, "Culinary Note 1", "Description", "Instructions"));
@@ -76,8 +82,10 @@ public class CulinaryNoteRepositoryTest {
 
     @Test
     void updateCulinaryNoteTest() throws EmailAlreadyTakenException {
-        User user = userRepository.create(new User(null, UserRole.USER, "Test", "User",
-                "password", "test.user@example.com"));
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNoteToUpdate = new CulinaryNote(null, Arrays.asList(Category.APPETIZER),
                 user, "Culinary Note 1", "Description", "Instructions");
@@ -95,8 +103,10 @@ public class CulinaryNoteRepositoryTest {
 
     @Test
     void deleteCulinaryNoteTest() throws EmailAlreadyTakenException {
-        User user = userRepository.create(new User(null, UserRole.USER, "Test", "User",
-                "password", "test.user@example.com"));
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote = culinaryNoteRepository.create(new CulinaryNote(null, Arrays.asList(Category.APPETIZER),
                 user, "Culinary Note 1", "Description", "Instructions"));

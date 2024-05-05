@@ -1,9 +1,8 @@
-package dto.ingredientinculinarynote;
+package dto;
 
 import lombok.*;
-import entities.Ingredient;
-import entities.CulinaryNote;
 import entities.UnitOfMeasurement;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -11,8 +10,8 @@ import entities.UnitOfMeasurement;
 @EqualsAndHashCode
 @Builder
 public class IngredientInCulinaryNoteDto {
-    Ingredient ingredient;
-    CulinaryNote culinaryNote;
+    IngredientDto ingredient;
+    CulinaryNoteDto culinaryNote;
     UnitOfMeasurement unitOfMeasurement;
-    float amount;
+    double amount;
 }

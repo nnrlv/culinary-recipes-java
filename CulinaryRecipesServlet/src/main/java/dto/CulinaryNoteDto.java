@@ -1,9 +1,11 @@
-package dto.culinarynote;
+package dto;
 
 import lombok.*;
+
 import java.util.List;
-import entities.User;
+
 import entities.Category;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -11,9 +13,10 @@ import entities.Category;
 @EqualsAndHashCode
 @Builder
 public class CulinaryNoteDto {
-    private Long idCulinaryNote;
+    Long idCulinaryNote;
     private List<Category> categories;
-    private User user;
+    private List<IngredientInCulinaryNoteDto> ingredientsInCulinaryNote;
+    private UserDto user;
     private String name;
     private String description;
     private String instructions;

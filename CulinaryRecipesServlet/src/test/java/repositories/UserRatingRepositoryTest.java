@@ -22,9 +22,10 @@ public class UserRatingRepositoryTest {
 
     @Test
     void createNewUserRatingTest() throws EmailAlreadyTakenException {
-        User user = new User(null, UserRole.USER, "TestUser", "TestUser",
-                "password", "test.user@example.com");
-        userRepository.create(user);
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote = new CulinaryNote(null, new ArrayList<>(),
                 user, "TestNote", "Description", "Instructions");
@@ -43,15 +44,18 @@ public class UserRatingRepositoryTest {
 
     @Test
     void getAllUserRatingsByCulinaryNoteIdTest() throws EmailAlreadyTakenException {
-        User user0 = new User(null, UserRole.USER, "TestUser0", "TestUser0",
-                "password", "test0.user@example.com");
-        User user1 = new User(null, UserRole.USER, "TestUser1", "TestUser1",
-                "password", "test1.user@example.com");
-        User user2 = new User(null, UserRole.USER, "TestUser2", "TestUser2",
-                "password", "test2.user@example.com");
-        userRepository.create(user0);
-        userRepository.create(user1);
-        userRepository.create(user2);
+        User userToCreate0 = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test1.test@example.com");
+        User userToCreate1 = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        User userToCreate2 = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test3.test@example.com");
+        userRepository.create(userToCreate0);
+        userRepository.create(userToCreate1);
+        userRepository.create(userToCreate2);
+        User user0 = userRepository.getByEmail(userToCreate0.getEmail());
+        User user1 = userRepository.getByEmail(userToCreate1.getEmail());
+        User user2 = userRepository.getByEmail(userToCreate2.getEmail());
 
         CulinaryNote culinaryNote = new CulinaryNote(null, Arrays.asList(Category.APPETIZER), user0,
                 "TestNote", "Description", "Instructions");
@@ -82,9 +86,10 @@ public class UserRatingRepositoryTest {
 
     @Test
     void deleteUserRatingTest() throws EmailAlreadyTakenException {
-        User user = new User(null, UserRole.USER, "TestUser0", "TestUser0",
-                "password", "test0.user@example.com");
-        userRepository.create(user);
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote = new CulinaryNote(null, Arrays.asList(Category.APPETIZER),
                 user, "TestNote", "Description", "Instructions");

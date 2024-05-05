@@ -1,0 +1,16 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Create Ingredient</title>
+</head>
+<body>
+    <h1>Create New Ingredient</h1>
+    <c:if test="${sessionScope.user.role == 'ADMIN'}">
+        <form action="${pageContext.request.contextPath}/createIngredient" method="post">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required/><br/><br/>
+            <input type="submit" value="Create"/>
+        </form>
+    </c:if>
+</body>
+</html>

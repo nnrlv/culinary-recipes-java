@@ -1,22 +1,18 @@
 package services;
 
 import repositories.UserRepository;
-import dto.user.CreateUserDto;
-import dto.user.UserDto;
-import entities.User;
+import dto.UserDto;
 import exceptions.EmailAlreadyTakenException;
 import lombok.AllArgsConstructor;
-import mappers.user.CreateUserMapper;
-import mappers.user.UserMapper;
+import mappers.UserMapper;
 import java.util.List;
 
 @AllArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final CreateUserMapper createUserMapper;
-    public User create(CreateUserDto userDto) throws EmailAlreadyTakenException {
-        return userRepository.create(createUserMapper.map(userDto));
+    public boolean create(UserDto userDto) throws EmailAlreadyTakenException {
+        return userRepository.create(userMapper.map(userDto));
     }
     public List<UserDto> getAll() {
         return userRepository.getAll().stream().map(userMapper::map).toList();

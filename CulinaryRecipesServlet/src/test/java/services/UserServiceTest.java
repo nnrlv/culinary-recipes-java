@@ -1,13 +1,11 @@
 package services;
 
 import repositories.UserRepository;
-import dto.user.CreateUserDto;
-import dto.user.UserDto;
+import dto.UserDto;
 import entities.UserRole;
 import entities.User;
 import exceptions.EmailAlreadyTakenException;
-import mappers.user.CreateUserMapper;
-import mappers.user.UserMapper;
+import mappers.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,122 +16,90 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
+
     @Mock
     private UserRepository userRepository;
+
     @Mock
     private UserMapper userMapper;
-    @Mock
-    private CreateUserMapper createUserMapper;
+
     @InjectMocks
     private UserService userService;
 
     @Test
-    void CreateNewUserTest_EmailNotExists() throws EmailAlreadyTakenException {
-        CreateUserDto createUserDto = getCreateUserDto();
-        User user = getUser();
+    public void testCreateUser() throws EmailAlreadyTakenException {
+        UserDto userDto = new UserDto(null, UserRole.USER, "name", "surname", "password", "email");
+        User user = new User(null, UserRole.USER, "name", "surname", "password", "email");
+        when(userMapper.map(userDto)).thenReturn(user);
+        when(userRepository.create(user)).thenReturn(true);
 
-        when(createUserMapper.map(createUserDto)).thenReturn(user);
-        when(userRepository.create(user)).thenReturn(user);
+        boolean result = userService.create(userDto);
 
-        User result = userService.create(createUserDto);
-
-        assertThat(result).isEqualTo(user);
+        assertThat(result).isTrue();
     }
 
     @Test
-    void CreateNewUserTest_EmailAlreadyExists() throws EmailAlreadyTakenException {
-        CreateUserDto createUserDto = getCreateUserDto();
-        User user = getUser();
+    public void testGetAllUsers() {
+        List<User> users = List.of(
+                new User(null, UserRole.USER, "name", "surname", "password", "email1"),
+                new User(null, UserRole.USER, "name", "surname", "password", "email2")
+        );
 
-        when(createUserMapper.map(createUserDto)).thenReturn(user);
-        when(userRepository.create(user)).thenThrow(EmailAlreadyTakenException.class);
+        when(userRepository.getAll()).thenReturn(users);
+        when(userMapper.map(users.get(0))).thenReturn(
+                new UserDto( null, UserRole.USER, "name", "surname", "password", "email1"));
+        when(userMapper.map(users.get(1))).thenReturn(
+                new UserDto(null, UserRole.USER, "name", "surname", "password", "email2"));
 
-        EmailAlreadyTakenException exception = assertThrows(EmailAlreadyTakenException.class,
-                () -> userService.create(createUserDto));
+        List<UserDto> result = userService.getAll();
+
+        assertThat(result).hasSize(2);
+        assertThat(result.get(0).getEmail()).isEqualTo("email1");
+        assertThat(result.get(1).getEmail()).isEqualTo("email2");
     }
 
     @Test
-    void getByEmailTest_UserExists() {
-        UserDto userDto = getUserDto();
-        User user = getUser();
-        String email = user.getEmail();
-        when(userMapper.map(user)).thenReturn(userDto);
-        when(userRepository.getByEmail(email)).thenReturn(user);
+    public void testGetByEmail() {
+        User user = new User(null, UserRole.USER, "name", "surname",
+                "password", "email");
+        when(userRepository.getByEmail("email")).thenReturn(user);
+        when(userMapper.map(user)).thenReturn(new UserDto(null, UserRole.USER, "name", "surname",
+                "password", "email"));
 
-        assertThat(userService.getByEmail(email)).isEqualTo(userDto);
+        UserDto result = userService.getByEmail("email");
+
+        assertThat(result.getEmail()).isEqualTo("email");
     }
 
     @Test
-    void getByEmailTest_UserDoesntExist() {
-        User user = getUser();
-        String email = user.getEmail();
-        when(userRepository.getByEmail(email)).thenReturn(null);
-        assertThat(userService.getByEmail(email)).isEqualTo(null);
-    }
-    @Test
-    void getAllUsersTest_UsersNotEmpty() {
-        User user = getUser();
-        List<User> users = List.of(user);
-        UserDto userDto = getUserDto();
-
-        when(userRepository.getAll())
-                .thenReturn(users);
-        when(userMapper.map(user))
-                .thenReturn(userDto);
-
-        assertThat(userService.getAll())
-                .hasSize(1);
-        userService.getAll().stream().map(UserDto::getIdUser)
-                .forEach(id -> assertThat(id).isEqualTo(1));
+    public void testGetByEmailWithEmptyEmail() {
+        assertThrows(IllegalArgumentException.class, () -> userService.getByEmail(""));
     }
 
     @Test
-    void getAllUsersTest_UsersEmpty() {
-        when(userRepository.getAll())
-                .thenReturn(null);
-        NullPointerException exception = assertThrows(NullPointerException.class,
-                () -> userService.getAll());
+    public void testUpdateUser() {
+        UserDto userDto = new UserDto(null, UserRole.USER, "name", "surname",
+                "password", "email");
+        User user = new User(null, UserRole.USER, "name", "surname",
+                "password", "email");
+        when(userMapper.map(userDto)).thenReturn(user);
+
+        userService.updateUser(userDto);
+
+        verify(userRepository).update(user);
     }
 
     @Test
-    void deleteUserTest_UserExists() {
-        Long id = 777L;
-        when(userRepository.delete(id)).thenReturn(true);
-        assertThat(userService.delete(id)).isEqualTo(true);
-    }
-    @Test
-    void deleteUserTest_UserDoesntExist() {
-        Long id = 666L;
-        when(userRepository.delete(id)).thenReturn(false);
-        assertThat(userService.delete(id)).isEqualTo(false);
-    }
+    public void testDeleteUser() {
+        Long userId = 1L;
+        when(userRepository.delete(userId)).thenReturn(true);
 
-    private static UserDto getUserDto() {
-        return new UserDto(1L,
-                UserRole.USER,
-                "test1",
-                "test1",
-                "password",
-                "test@gmail.com");
-    }
+        boolean result = userService.delete(userId);
 
-    private static User getUser() {
-        return new User(1L,
-                UserRole.USER,
-                "test1",
-                "test1",
-                "password",
-                "test@gmail.com");
-
-    }
-
-    private static CreateUserDto getCreateUserDto() {
-        return new CreateUserDto("test1",
-                "test1",
-                "password",
-                "test@gmail.com");
+        assertThat(result).isTrue();
     }
 }

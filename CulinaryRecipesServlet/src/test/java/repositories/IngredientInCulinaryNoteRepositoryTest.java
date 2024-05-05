@@ -25,9 +25,10 @@ public class IngredientInCulinaryNoteRepositoryTest {
 
     @Test
     void createNewIngredientInCulinaryNoteTest() throws EmailAlreadyTakenException {
-        User user = new User(null, UserRole.USER, "TestUser", "TestUser",
-                "password", "test.user@example.com");
-        userRepository.create(user);
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote = new CulinaryNote(null, Arrays.asList(Category.APPETIZER),
                 user, "TestNote", "Description", "Instructions");
@@ -52,9 +53,10 @@ public class IngredientInCulinaryNoteRepositoryTest {
 
     @Test
     void getAllIngredientsInCulinaryNoteTest() throws EmailAlreadyTakenException {
-        User user = new User(null, UserRole.USER, "TestUser", "TestUser",
-                "password", "test.user@example.com");
-        userRepository.create(user);
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote = new CulinaryNote(null, Arrays.asList(Category.APPETIZER),
                 user, "TestNote", "Description", "Instructions");
@@ -94,9 +96,10 @@ public class IngredientInCulinaryNoteRepositoryTest {
 
     @Test
     void deleteIngredientInCulinaryNoteTest() throws EmailAlreadyTakenException {
-        User user = new User(null, UserRole.USER, "TestUser", "TestUser",
-                "password", "test.user@example.com");
-        userRepository.create(user);
+        User userToCreate = new User(null, UserRole.USER, "test1", "test1",
+                "password1", "test2.test@example.com");
+        userRepository.create(userToCreate);
+        User user = userRepository.getByEmail(userToCreate.getEmail());
 
         CulinaryNote culinaryNote = new CulinaryNote(null, Arrays.asList(Category.APPETIZER),
                 user, "TestNote", "Description", "Instructions");

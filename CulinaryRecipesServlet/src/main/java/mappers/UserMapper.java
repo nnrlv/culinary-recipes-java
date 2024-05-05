@@ -1,8 +1,7 @@
-package mappers.user;
+package mappers;
 
-import dto.user.UserDto;
+import dto.UserDto;
 import entities.User;
-import mappers.Mapper;
 
 public class UserMapper implements Mapper<User, UserDto> {
     @Override

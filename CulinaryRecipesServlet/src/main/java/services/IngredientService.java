@@ -1,12 +1,10 @@
 package services;
 
 import repositories.IngredientRepository;
-import dto.ingredient.CreateIngredientDto;
-import dto.ingredient.IngredientDto;
+import dto.IngredientDto;
 import entities.Ingredient;
 import lombok.AllArgsConstructor;
-import mappers.ingredient.CreateIngredientMapper;
-import mappers.ingredient.IngredientMapper;
+import mappers.IngredientMapper;
 
 import java.util.List;
 
@@ -14,10 +12,8 @@ import java.util.List;
 public class IngredientService {
     private final IngredientRepository ingredientRepository;
     private final IngredientMapper ingredientMapper;
-    private final CreateIngredientMapper createIngredientMapper;
-
-    public Ingredient create(CreateIngredientDto ingredientDto) {
-        return ingredientRepository.create(createIngredientMapper.map(ingredientDto));
+    public Ingredient create(IngredientDto ingredientDto) {
+        return ingredientRepository.create(ingredientMapper.map(ingredientDto));
     }
 
     public List<IngredientDto> getAll() {

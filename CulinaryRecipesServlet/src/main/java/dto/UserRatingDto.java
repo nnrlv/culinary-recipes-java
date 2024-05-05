@@ -1,4 +1,4 @@
-package dto.userrating;
+package dto;
 
 import entities.CulinaryNote;
 import entities.User;

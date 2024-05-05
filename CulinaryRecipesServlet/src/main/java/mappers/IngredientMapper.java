@@ -1,8 +1,7 @@
-package mappers.ingredient;
+package mappers;
 
-import dto.ingredient.IngredientDto;
+import dto.IngredientDto;
 import entities.Ingredient;
-import mappers.Mapper;
 
 public class IngredientMapper implements Mapper<Ingredient, IngredientDto> {
     @Override

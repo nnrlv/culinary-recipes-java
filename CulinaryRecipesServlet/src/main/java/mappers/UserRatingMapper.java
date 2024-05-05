@@ -1,8 +1,7 @@
-package mappers.userrating;
+package mappers;
 
-import dto.userrating.UserRatingDto;
+import dto.UserRatingDto;
 import entities.UserRating;
-import mappers.Mapper;
 
 public class UserRatingMapper implements Mapper<UserRating, UserRatingDto> {
     @Override
@@ -12,5 +11,13 @@ public class UserRatingMapper implements Mapper<UserRating, UserRatingDto> {
                 userRating.getCulinaryNote(),
                 userRating.getGrade(),
                 userRating.getComment());
+    }
+
+    public UserRating map(UserRatingDto userRatingDto) {
+        return new UserRating(
+                userRatingDto.getUser(),
+                userRatingDto.getCulinaryNote(),
+                userRatingDto.getGrade(),
+                userRatingDto.getComment());
     }
 }

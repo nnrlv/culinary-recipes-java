@@ -1,13 +1,9 @@
 package services;
 
 import repositories.CulinaryNoteRepository;
-import dto.culinarynote.CreateCulinaryNoteDto;
-import dto.culinarynote.CulinaryNoteDto;
-import dto.culinarynote.UpdateCulinaryNoteDto;
+import dto.CulinaryNoteDto;
 import entities.CulinaryNote;
-import mappers.culinarynote.CreateCulinaryNoteMapper;
-import mappers.culinarynote.CulinaryNoteMapper;
-import mappers.culinarynote.UpdateCulinaryNoteMapper;
+import mappers.CulinaryNoteMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,22 +19,18 @@ public class CulinaryNoteServiceTest {
     @Mock
     private CulinaryNoteRepository culinaryNoteRepository;
     @Mock
-    private CreateCulinaryNoteMapper createCulinaryNoteMapper;
-    @Mock
     private CulinaryNoteMapper culinaryNoteMapper;
-    @Mock
-    private UpdateCulinaryNoteMapper updateCulinaryNoteMapper;
     @InjectMocks
     private CulinaryNoteService culinaryNoteService;
 
     @Test
     void testCreateCulinaryNote() {
-        CreateCulinaryNoteDto createCulinaryNoteDto = new CreateCulinaryNoteDto();
+        CulinaryNoteDto createCulinaryNoteDto = new CulinaryNoteDto();
         CulinaryNote culinaryNote = new CulinaryNote();
-        when(createCulinaryNoteMapper.map(createCulinaryNoteDto)).thenReturn(culinaryNote);
+        when(culinaryNoteMapper.map(createCulinaryNoteDto)).thenReturn(culinaryNote);
         when(culinaryNoteRepository.create(culinaryNote)).thenReturn(culinaryNote);
 
-        CulinaryNote result = culinaryNoteService.create(createCulinaryNoteDto);
+        CulinaryNoteDto result = culinaryNoteService.create(createCulinaryNoteDto);
 
         assertThat(result).isEqualTo(culinaryNote);
     }
@@ -47,7 +39,7 @@ public class CulinaryNoteServiceTest {
     void testGetAllCulinaryNotes() {
         List<CulinaryNote> culinaryNotes = List.of(new CulinaryNote());
         when(culinaryNoteRepository.getAll()).thenReturn(culinaryNotes);
-        when(culinaryNoteMapper.map(any())).thenReturn(new CulinaryNoteDto());
+        when(culinaryNoteMapper.map(any(CulinaryNote.class))).thenReturn(new CulinaryNoteDto());
 
         List<CulinaryNoteDto> result = culinaryNoteService.getAll();
 
@@ -69,9 +61,9 @@ public class CulinaryNoteServiceTest {
 
     @Test
     void testUpdateCulinaryNote() {
-        UpdateCulinaryNoteDto updateCulinaryNoteDto = new UpdateCulinaryNoteDto();
+        CulinaryNoteDto updateCulinaryNoteDto = new CulinaryNoteDto();
         CulinaryNote culinaryNote = new CulinaryNote();
-        when(updateCulinaryNoteMapper.map(updateCulinaryNoteDto)).thenReturn(culinaryNote);
+        when(culinaryNoteMapper.map(updateCulinaryNoteDto)).thenReturn(culinaryNote);
         when(culinaryNoteRepository.update(culinaryNote)).thenReturn(true);
 
         boolean result = culinaryNoteService.update(updateCulinaryNoteDto);

@@ -1,25 +1,19 @@
 package services;
 
 import repositories.CulinaryNoteRepository;
-import dto.culinarynote.CulinaryNoteDto;
-import dto.culinarynote.CreateCulinaryNoteDto;
-import dto.culinarynote.UpdateCulinaryNoteDto;
-import entities.CulinaryNote;
+import dto.CulinaryNoteDto;
 import lombok.AllArgsConstructor;
-import mappers.culinarynote.CulinaryNoteMapper;
-import mappers.culinarynote.CreateCulinaryNoteMapper;
-import mappers.culinarynote.UpdateCulinaryNoteMapper;
+import mappers.CulinaryNoteMapper;
+
 import java.util.List;
 
 @AllArgsConstructor
 public class CulinaryNoteService {
     private final CulinaryNoteRepository culinaryNoteRepository;
-    private final CreateCulinaryNoteMapper createCulinaryNoteMapper;
     private final CulinaryNoteMapper culinaryNoteMapper;
-    private final UpdateCulinaryNoteMapper updateCulinaryNoteMapper;
 
-    public CulinaryNote create(CreateCulinaryNoteDto createCulinaryNoteDto) {
-        return culinaryNoteRepository.create(createCulinaryNoteMapper.map(createCulinaryNoteDto));
+    public CulinaryNoteDto create(CulinaryNoteDto createCulinaryNoteDto) {
+        return culinaryNoteMapper.map(culinaryNoteRepository.create(culinaryNoteMapper.map(createCulinaryNoteDto)));
     }
 
     public List<CulinaryNoteDto> getAll() {
@@ -30,8 +24,8 @@ public class CulinaryNoteService {
         return culinaryNoteMapper.map(culinaryNoteRepository.getById(id));
     }
 
-    public boolean update(UpdateCulinaryNoteDto updateCulinaryNoteDto) {
-        return culinaryNoteRepository.update(updateCulinaryNoteMapper.map(updateCulinaryNoteDto));
+    public boolean update(CulinaryNoteDto updateCulinaryNoteDto) {
+        return culinaryNoteRepository.update(culinaryNoteMapper.map(updateCulinaryNoteDto));
     }
 
     public boolean delete(Long id) {

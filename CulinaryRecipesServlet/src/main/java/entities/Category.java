@@ -1,5 +1,8 @@
 package entities;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum Category {
     APPETIZER,
     MAIN_COURSE,
@@ -11,5 +14,11 @@ public enum Category {
     BREAKFAST,
     SIDE_DISH,
     SAUCE,
-    CONDIMENT
+    CONDIMENT;
+
+    public static List<String> getAllNames() {
+        return Arrays.stream(Category.values())
+                .map(Enum::name)
+                .toList();
+    }
 }

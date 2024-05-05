@@ -1,11 +1,9 @@
 package services;
 
 import repositories.IngredientRepository;
-import dto.ingredient.CreateIngredientDto;
-import dto.ingredient.IngredientDto;
+import dto.IngredientDto;
 import entities.Ingredient;
-import mappers.ingredient.CreateIngredientMapper;
-import mappers.ingredient.IngredientMapper;
+import mappers.IngredientMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,17 +22,15 @@ public class IngredientServiceTest {
     private IngredientRepository ingredientRepository;
     @Mock
     private IngredientMapper ingredientMapper;
-    @Mock
-    private CreateIngredientMapper createIngredientMapper;
     @InjectMocks
     private IngredientService ingredientService;
 
     @Test
     void createNewIngredientTest() {
-        CreateIngredientDto createIngredientDto = getCreateIngredientDto();
+        IngredientDto createIngredientDto = getIngredientDto();
         Ingredient ingredient = getIngredient();
 
-        when(createIngredientMapper.map(createIngredientDto)).thenReturn(ingredient);
+        when(ingredientMapper.map(createIngredientDto)).thenReturn(ingredient);
         when(ingredientRepository.create(ingredient)).thenReturn(ingredient);
 
         Ingredient result = ingredientService.create(createIngredientDto);
@@ -100,14 +96,10 @@ public class IngredientServiceTest {
     }
 
     private static IngredientDto getIngredientDto() {
-        return new IngredientDto(1L, "Test Ingredient");
+        return new IngredientDto(null, "Test Ingredient");
     }
 
     private static Ingredient getIngredient() {
         return new Ingredient(1L, "Test Ingredient");
-    }
-
-    private static CreateIngredientDto getCreateIngredientDto() {
-        return new CreateIngredientDto("Test Ingredient");
     }
 }
