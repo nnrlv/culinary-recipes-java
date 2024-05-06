@@ -49,8 +49,8 @@ class UserRepositoryTest {
 
         List<User> usersFromRepository = userRepository.getAll();
 
-        user1.setIdUser(usersFromRepository.getFirst().getIdUser());
-        user2.setIdUser(usersFromRepository.getLast().getIdUser());
+        user1.setIdUser(usersFromRepository.get(0).getIdUser());
+        user2.setIdUser(usersFromRepository.get(1).getIdUser());
 
         assertTrue(users.size() == usersFromRepository.size() &&
                 usersFromRepository.containsAll(users) && users.containsAll(usersFromRepository));

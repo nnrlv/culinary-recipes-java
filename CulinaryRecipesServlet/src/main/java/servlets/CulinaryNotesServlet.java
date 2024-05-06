@@ -35,11 +35,6 @@ public class CulinaryNotesServlet extends HttpServlet {
                     new IngredientInCulinaryNoteMapper()
     );
 
-    private final IngredientService ingredientService = new IngredientService(
-            new IngredientRepository(),
-            new IngredientMapper()
-    );
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<CulinaryNoteDto> culinaryNotes = culinaryNoteService.getAll();
@@ -63,6 +58,9 @@ public class CulinaryNotesServlet extends HttpServlet {
             case "delete":
                 Long id = Long.parseLong(req.getParameter("idCulinaryNote"));
                 culinaryNoteService.delete(id);
+                break;
+            case "viewDetails":
+                resp.sendRedirect(req.getContextPath() + CULINARY_NOTE_DETAIL);
                 break;
             case "viewIngredients":
                 resp.sendRedirect(req.getContextPath() + INGREDIENTS);

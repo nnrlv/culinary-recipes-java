@@ -120,7 +120,9 @@
                 </ul>
                 <c:if test="${sessionScope.user.role == 'ADMIN' || sessionScope.user.idUser == culinaryNote.user.idUser}">
                     <form action="${pageContext.request.contextPath}/updateCulinaryNote" method="get">
-                        <button type="submit" class="change-button" name="name" value="${culinaryNote.name}">Update</button>
+                        <input type="hidden" name="action" value="delete"/>
+                        <input type="hidden" name="idCulinaryNote" value="${culinaryNote.idCulinaryNote}"/>
+                        <input type="submit" value="Update"/>
                     </form>
                     <form action="${pageContext.request.contextPath}/culinaryNotes" method="post">
                         <input type="hidden" name="action" value="delete"/>
@@ -128,6 +130,11 @@
                         <input type="submit" value="Delete"/>
                     </form>
                 </c:if>
+                <form action="${pageContext.request.contextPath}/culinaryNoteDetail" method="get">
+                    <input type="hidden" name="action" value="viewDetails"/>
+                    <input type="hidden" name="idCulinaryNote" value="${culinaryNote.idCulinaryNote}"/>
+                    <input type="submit" value="View details"/>
+                </form>
             </div>
             <hr/>
         </c:forEach>

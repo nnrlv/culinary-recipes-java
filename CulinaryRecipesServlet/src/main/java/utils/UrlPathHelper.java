@@ -10,6 +10,7 @@ public class UrlPathHelper {
     public static final String CULINARY_NOTE_CREATE = "/createCulinaryNote";
 
     public static final String CULINARY_NOTE_UPDATE = "/updateCulinaryNote";
+    public static final String CULINARY_NOTE_DETAIL = "/culinaryNoteDetail";
 
     public static final String INGREDIENTS = "/ingredients";
 
