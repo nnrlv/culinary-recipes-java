@@ -1,7 +1,6 @@
 package servlets;
 
 import dto.CulinaryNoteDto;
-
 import dto.IngredientDto;
 import dto.IngredientInCulinaryNoteDto;
 import dto.UserDto;
@@ -23,20 +22,23 @@ import services.CulinaryNoteService;
 import services.IngredientInCulinaryNoteService;
 import services.IngredientService;
 import utils.JspHelper;
-import utils.UrlPathHelper;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static utils.UrlPathHelper.*;
+import static utils.UrlPathHelper.CULINARY_NOTE_CREATE;
 
 @WebServlet(CULINARY_NOTE_CREATE)
 public class CreateCulinaryNoteServlet extends HttpServlet {
     private final CulinaryNoteService culinaryNoteService = new CulinaryNoteService(
             new CulinaryNoteRepository(),
-            new CulinaryNoteMapper()
+            new CulinaryNoteMapper(),
+            new IngredientInCulinaryNoteService(
+                    new IngredientInCulinaryNoteRepository(),
+                    new IngredientInCulinaryNoteMapper()
+            )
     );
 
     private final IngredientService ingredientService = new IngredientService(
@@ -61,7 +63,7 @@ public class CreateCulinaryNoteServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String name = req.getParameter("name");
         String description = req.getParameter("description");
         String instructions = req.getParameter("instructions");
@@ -93,7 +95,7 @@ public class CreateCulinaryNoteServlet extends HttpServlet {
             ingredientInCulinaryNoteService.create(ingredientInCulinaryNoteDto);
         }
 
-        resp.sendRedirect(req.getContextPath() + UrlPathHelper.CULINARY_NOTES);
+        resp.sendRedirect(req.getContextPath() + "/culinaryNoteDetail?idCulinaryNote=" + created.getIdCulinaryNote());
     }
 }
 

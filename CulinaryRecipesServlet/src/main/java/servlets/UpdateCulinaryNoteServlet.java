@@ -1,10 +1,8 @@
 package servlets;
 
 import dto.CulinaryNoteDto;
-
 import dto.IngredientDto;
 import dto.IngredientInCulinaryNoteDto;
-import dto.UserDto;
 import entities.Category;
 import entities.UnitOfMeasurement;
 import jakarta.servlet.ServletException;
@@ -12,7 +10,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import mappers.CulinaryNoteMapper;
 import mappers.IngredientInCulinaryNoteMapper;
 import mappers.IngredientMapper;
@@ -23,20 +20,23 @@ import services.CulinaryNoteService;
 import services.IngredientInCulinaryNoteService;
 import services.IngredientService;
 import utils.JspHelper;
-import utils.UrlPathHelper;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static utils.UrlPathHelper.*;
+import static utils.UrlPathHelper.CULINARY_NOTE_UPDATE;
 
 @WebServlet(CULINARY_NOTE_UPDATE)
 public class UpdateCulinaryNoteServlet extends HttpServlet {
     private final CulinaryNoteService culinaryNoteService = new CulinaryNoteService(
             new CulinaryNoteRepository(),
-            new CulinaryNoteMapper()
+            new CulinaryNoteMapper(),
+            new IngredientInCulinaryNoteService(
+                    new IngredientInCulinaryNoteRepository(),
+                    new IngredientInCulinaryNoteMapper()
+            )
     );
 
     private final IngredientService ingredientService = new IngredientService(
@@ -81,12 +81,13 @@ public class UpdateCulinaryNoteServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Long id = Long.parseLong(req.getParameter("idCulinaryNote"));
         String name = req.getParameter("name");
         String description = req.getParameter("description");
         String instructions = req.getParameter("instructions");
         String[] selectedCategories = req.getParameterValues("categories");
+        String[] selectedIngredients = req.getParameterValues("ingredients");
 
         List<Category> categories = Arrays.stream(selectedCategories)
                 .map(Category::valueOf)
@@ -98,9 +99,25 @@ public class UpdateCulinaryNoteServlet extends HttpServlet {
         culinaryNote.setInstructions(instructions);
         culinaryNote.setCategories(categories);
 
+        for (IngredientInCulinaryNoteDto ingredient: ingredientInCulinaryNoteService
+                        .getAllByCulinaryNoteId(culinaryNote.getIdCulinaryNote()))
+        {
+            ingredientInCulinaryNoteService
+                    .delete(ingredient.getIngredient().getIdIngredient(), culinaryNote.getIdCulinaryNote());
+        }
+
+        for (String selectedIngredient : selectedIngredients) {
+            double amount = Double.parseDouble(req.getParameter("amount_" + selectedIngredient));
+            UnitOfMeasurement unitOfMeasurement = UnitOfMeasurement.valueOf(req.getParameter("unit_" + selectedIngredient));
+            IngredientDto ingredient = ingredientService.getById(Long.valueOf(selectedIngredient));
+            IngredientInCulinaryNoteDto ingredientInCulinaryNoteDto =
+                    new IngredientInCulinaryNoteDto(ingredient, culinaryNote, unitOfMeasurement, amount);
+            ingredientInCulinaryNoteService.create(ingredientInCulinaryNoteDto);
+        }
+
         culinaryNoteService.update(culinaryNote);
 
-        resp.sendRedirect(req.getContextPath() + UrlPathHelper.CULINARY_NOTES);
+        resp.sendRedirect(req.getContextPath() + "/culinaryNoteDetail?idCulinaryNote=" + id);
     }
 }
 

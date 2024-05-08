@@ -39,7 +39,7 @@
             <label for="${category}">${category}</label><br/>
         </c:forEach>
 
-        <input type="submit" value="Update"/>
+        <input type="submit" value="update"/>
     </form>
 </body>
 </html>

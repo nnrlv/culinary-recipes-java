@@ -101,17 +101,6 @@
             <div class="culinaryNote-item">
                 <ul>
                     <li>Name: <c:out value="${culinaryNote.name}"/></li>
-                    <li>Ingredients:
-                                    <ul>
-                                        <c:forEach var="ingredientInCulinaryNote" items="${culinaryNote.ingredientsInCulinaryNote}">
-                                            <li>
-                                                Ingredient: <c:out value="${ingredientInCulinaryNote.ingredient.name}"/>
-                                            </li>
-                                        </c:forEach>
-                                    </ul>
-                    </li>
-                    <li>Description: <c:out value="${culinaryNote.description}"/></li>
-                    <li>Instructions: <c:out value="${culinaryNote.instructions}"/></li>
                     <li>Categories:
                                     <c:forEach var="category" items="${culinaryNote.categories}">
                                         <c:out value="${category}"/>
@@ -120,7 +109,7 @@
                 </ul>
                 <c:if test="${sessionScope.user.role == 'ADMIN' || sessionScope.user.idUser == culinaryNote.user.idUser}">
                     <form action="${pageContext.request.contextPath}/updateCulinaryNote" method="get">
-                        <input type="hidden" name="action" value="delete"/>
+                        <input type="hidden" name="action" value="update"/>
                         <input type="hidden" name="idCulinaryNote" value="${culinaryNote.idCulinaryNote}"/>
                         <input type="submit" value="Update"/>
                     </form>
@@ -130,11 +119,11 @@
                         <input type="submit" value="Delete"/>
                     </form>
                 </c:if>
-                <form action="${pageContext.request.contextPath}/culinaryNoteDetail" method="get">
-                    <input type="hidden" name="action" value="viewDetails"/>
-                    <input type="hidden" name="idCulinaryNote" value="${culinaryNote.idCulinaryNote}"/>
-                    <input type="submit" value="View details"/>
-                </form>
+                    <form action="${pageContext.request.contextPath}/culinaryNoteDetail" method="get">
+                        <input type="hidden" name="action" value="viewDetails"/>
+                        <input type="hidden" name="idCulinaryNote" value="${culinaryNote.idCulinaryNote}"/>
+                        <input type="submit" value="View details"/>
+                    </form>
             </div>
             <hr/>
         </c:forEach>

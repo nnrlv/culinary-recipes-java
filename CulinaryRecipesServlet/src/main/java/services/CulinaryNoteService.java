@@ -1,5 +1,6 @@
 package services;
 
+import dto.IngredientInCulinaryNoteDto;
 import repositories.CulinaryNoteRepository;
 import dto.CulinaryNoteDto;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.List;
 public class CulinaryNoteService {
     private final CulinaryNoteRepository culinaryNoteRepository;
     private final CulinaryNoteMapper culinaryNoteMapper;
+    private final IngredientInCulinaryNoteService ingredientInCulinaryNoteService;
 
     public CulinaryNoteDto create(CulinaryNoteDto createCulinaryNoteDto) {
         return culinaryNoteMapper.map(culinaryNoteRepository.create(culinaryNoteMapper.map(createCulinaryNoteDto)));
@@ -29,6 +31,13 @@ public class CulinaryNoteService {
     }
 
     public boolean delete(Long id) {
+        CulinaryNoteDto culinaryNote = culinaryNoteMapper.map(culinaryNoteRepository.getById(id));
+        for (IngredientInCulinaryNoteDto ingredient : ingredientInCulinaryNoteService
+                .getAllByCulinaryNoteId(culinaryNote.getIdCulinaryNote()))
+        {
+            ingredientInCulinaryNoteService.delete(ingredient.getIngredient().getIdIngredient(),
+                    culinaryNote.getIdCulinaryNote());
+        }
         return culinaryNoteRepository.delete(id);
     }
 }

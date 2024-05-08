@@ -1,7 +1,6 @@
 package servlets;
 
 import dto.CulinaryNoteDto;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,13 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mappers.CulinaryNoteMapper;
 import mappers.IngredientInCulinaryNoteMapper;
-import mappers.IngredientMapper;
 import repositories.CulinaryNoteRepository;
 import repositories.IngredientInCulinaryNoteRepository;
-import repositories.IngredientRepository;
 import services.CulinaryNoteService;
 import services.IngredientInCulinaryNoteService;
-import services.IngredientService;
 import utils.JspHelper;
 
 import java.io.IOException;
@@ -27,7 +23,11 @@ import static utils.UrlPathHelper.*;
 public class CulinaryNotesServlet extends HttpServlet {
     private final CulinaryNoteService culinaryNoteService = new CulinaryNoteService(
             new CulinaryNoteRepository(),
-            new CulinaryNoteMapper()
+            new CulinaryNoteMapper(),
+            new IngredientInCulinaryNoteService(
+                    new IngredientInCulinaryNoteRepository(),
+                    new IngredientInCulinaryNoteMapper()
+            )
     );
 
     private final IngredientInCulinaryNoteService ingredientInCulinaryNoteService = new IngredientInCulinaryNoteService(
@@ -46,7 +46,7 @@ public class CulinaryNotesServlet extends HttpServlet {
         req.getRequestDispatcher(JspHelper.get("culinaryNotes")).forward(req, resp);
     }
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String action = req.getParameter("action");
         switch (action) {
             case "create":

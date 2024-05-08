@@ -9,7 +9,7 @@
         <label for="name">Name:</label>
         <input type="hidden" name="idIngredient" value="${ingredient.idIngredient}"/>
         <input type="text" id="name" name="name" value="${ingredient.name}" required/><br/><br/>
-        <input type="submit" value="Update"/>
+        <input type="submit" value="update"/>
     </form>
 </body>
 </html>
