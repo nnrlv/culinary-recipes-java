@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import mappers.CulinaryNoteMapper;
 import mappers.IngredientInCulinaryNoteMapper;
 import mappers.IngredientMapper;
+import org.apache.log4j.Logger;
 import repositories.CulinaryNoteRepository;
 import repositories.IngredientInCulinaryNoteRepository;
 import repositories.IngredientRepository;
@@ -22,6 +23,7 @@ import services.CulinaryNoteService;
 import services.IngredientInCulinaryNoteService;
 import services.IngredientService;
 import utils.JspHelper;
+import validators.CulinaryNoteValidator;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -32,6 +34,8 @@ import static utils.UrlPathHelper.CULINARY_NOTE_CREATE;
 
 @WebServlet(CULINARY_NOTE_CREATE)
 public class CreateCulinaryNoteServlet extends HttpServlet {
+
+    private static final Logger logger = Logger.getLogger(RegisterUserServlet.class);
     private final CulinaryNoteService culinaryNoteService = new CulinaryNoteService(
             new CulinaryNoteRepository(),
             new CulinaryNoteMapper(),
@@ -51,6 +55,8 @@ public class CreateCulinaryNoteServlet extends HttpServlet {
             new IngredientInCulinaryNoteMapper()
     );
 
+    private final CulinaryNoteValidator validator = new CulinaryNoteValidator();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<IngredientDto> ingredients = ingredientService.getAll();
@@ -63,7 +69,7 @@ public class CreateCulinaryNoteServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String name = req.getParameter("name");
         String description = req.getParameter("description");
         String instructions = req.getParameter("instructions");
@@ -77,25 +83,28 @@ public class CreateCulinaryNoteServlet extends HttpServlet {
                 .map(Category::valueOf)
                 .collect(Collectors.toList());
 
-        CulinaryNoteDto culinaryNote = new CulinaryNoteDto();
-        culinaryNote.setName(name);
-        culinaryNote.setDescription(description);
-        culinaryNote.setInstructions(instructions);
-        culinaryNote.setUser(user);
-        culinaryNote.setCategories(categories);
+        CulinaryNoteDto culinaryNote = new CulinaryNoteDto(categories, user, name, description, instructions);
+        try {
+            validator.validate(culinaryNote);
 
-        CulinaryNoteDto created = culinaryNoteService.create(culinaryNote);
+            CulinaryNoteDto created = culinaryNoteService.create(culinaryNote);
 
-        for (String selectedIngredient : selectedIngredients) {
-            double amount = Double.parseDouble(req.getParameter("amount_" + selectedIngredient));
-            UnitOfMeasurement unitOfMeasurement = UnitOfMeasurement.valueOf(req.getParameter("unit_" + selectedIngredient));
-            IngredientDto ingredient = ingredientService.getById(Long.valueOf(selectedIngredient));
-            IngredientInCulinaryNoteDto ingredientInCulinaryNoteDto =
-                    new IngredientInCulinaryNoteDto(ingredient, created, unitOfMeasurement, amount);
-            ingredientInCulinaryNoteService.create(ingredientInCulinaryNoteDto);
+            for (String selectedIngredient : selectedIngredients) {
+                double amount = Double.parseDouble(req.getParameter("amount_" + selectedIngredient));
+                UnitOfMeasurement unitOfMeasurement = UnitOfMeasurement.valueOf(req.getParameter("unit_" + selectedIngredient));
+                IngredientDto ingredient = ingredientService.getById(Long.valueOf(selectedIngredient));
+                IngredientInCulinaryNoteDto ingredientInCulinaryNoteDto =
+                        new IngredientInCulinaryNoteDto(ingredient, created, unitOfMeasurement, amount);
+                ingredientInCulinaryNoteService.create(ingredientInCulinaryNoteDto);
+            }
+
+            resp.sendRedirect(req.getContextPath() + "/culinaryNoteDetail?idCulinaryNote=" + created.getIdCulinaryNote());
+        } catch (Exception e) {
+            String message = e.getMessage();
+            logger.error(message);
+            req.setAttribute("error", message);
+            doGet(req, resp);
         }
-
-        resp.sendRedirect(req.getContextPath() + "/culinaryNoteDetail?idCulinaryNote=" + created.getIdCulinaryNote());
     }
 }
 

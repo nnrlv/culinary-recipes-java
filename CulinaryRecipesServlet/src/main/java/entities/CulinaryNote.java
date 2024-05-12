@@ -15,4 +15,12 @@ public class CulinaryNote {
     private String name;
     private String description;
     private String instructions;
+
+    public CulinaryNote(List<Category> categories, User user, String name, String description, String instructions) {
+        this.categories = categories;
+        this.user = user;
+        this.name = name;
+        this.description = description;
+        this.instructions = instructions;
+    }
 }

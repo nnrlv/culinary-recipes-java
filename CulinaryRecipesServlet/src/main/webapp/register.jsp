@@ -61,8 +61,8 @@
         <input type="text" name="firstName" id="firstNameId" required><br>
         <label for="lastNameId">Last name</label>
         <input type="text" name="lastName" id="lastNameId" required><br>
-        <c:if test="${not empty requestScope.message}">
-            <div class="message"><c:out value="${requestScope.message}"/></div>
+        <c:if test="${not empty requestScope.error}">
+            <p style="color: red;"><c:out value="${requestScope.error}"/></p>
         </c:if>
         <button type="submit">Register</button>
     </form>

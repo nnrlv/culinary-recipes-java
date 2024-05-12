@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import mappers.CulinaryNoteMapper;
 import mappers.IngredientInCulinaryNoteMapper;
 import mappers.IngredientMapper;
+import org.apache.log4j.Logger;
 import repositories.CulinaryNoteRepository;
 import repositories.IngredientInCulinaryNoteRepository;
 import repositories.IngredientRepository;
@@ -20,6 +21,7 @@ import services.CulinaryNoteService;
 import services.IngredientInCulinaryNoteService;
 import services.IngredientService;
 import utils.JspHelper;
+import validators.CulinaryNoteValidator;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -30,6 +32,8 @@ import static utils.UrlPathHelper.CULINARY_NOTE_UPDATE;
 
 @WebServlet(CULINARY_NOTE_UPDATE)
 public class UpdateCulinaryNoteServlet extends HttpServlet {
+
+    private static final Logger logger = Logger.getLogger(RegisterUserServlet.class);
     private final CulinaryNoteService culinaryNoteService = new CulinaryNoteService(
             new CulinaryNoteRepository(),
             new CulinaryNoteMapper(),
@@ -48,6 +52,8 @@ public class UpdateCulinaryNoteServlet extends HttpServlet {
             new IngredientInCulinaryNoteRepository(),
             new IngredientInCulinaryNoteMapper()
     );
+
+    private final CulinaryNoteValidator validator = new CulinaryNoteValidator();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -81,7 +87,7 @@ public class UpdateCulinaryNoteServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         Long id = Long.parseLong(req.getParameter("idCulinaryNote"));
         String name = req.getParameter("name");
         String description = req.getParameter("description");
@@ -89,35 +95,44 @@ public class UpdateCulinaryNoteServlet extends HttpServlet {
         String[] selectedCategories = req.getParameterValues("categories");
         String[] selectedIngredients = req.getParameterValues("ingredients");
 
-        List<Category> categories = Arrays.stream(selectedCategories)
-                .map(Category::valueOf)
-                .collect(Collectors.toList());
+        try {
+            CulinaryNoteDto culinaryNote = culinaryNoteService.getById(id);
+            culinaryNote.setName(name);
+            culinaryNote.setDescription(description);
+            culinaryNote.setInstructions(instructions);
 
-        CulinaryNoteDto culinaryNote = culinaryNoteService.getById(id);
-        culinaryNote.setName(name);
-        culinaryNote.setDescription(description);
-        culinaryNote.setInstructions(instructions);
-        culinaryNote.setCategories(categories);
+            if (selectedCategories != null) {
+                List<Category> categories = Arrays.stream(selectedCategories)
+                        .map(Category::valueOf)
+                        .toList();
+                culinaryNote.setCategories(categories);
+            }
 
-        for (IngredientInCulinaryNoteDto ingredient: ingredientInCulinaryNoteService
-                        .getAllByCulinaryNoteId(culinaryNote.getIdCulinaryNote()))
-        {
-            ingredientInCulinaryNoteService
-                    .delete(ingredient.getIngredient().getIdIngredient(), culinaryNote.getIdCulinaryNote());
+            for (IngredientInCulinaryNoteDto ingredient : ingredientInCulinaryNoteService
+                    .getAllByCulinaryNoteId(culinaryNote.getIdCulinaryNote())) {
+                ingredientInCulinaryNoteService
+                        .delete(ingredient.getIngredient().getIdIngredient(), culinaryNote.getIdCulinaryNote());
+            }
+
+            if (selectedIngredients != null) {
+                for (String selectedIngredient : selectedIngredients) {
+                    double amount = Double.parseDouble(req.getParameter("amount_" + selectedIngredient));
+                    UnitOfMeasurement unitOfMeasurement = UnitOfMeasurement.valueOf(req.getParameter("unit_" + selectedIngredient));
+                    IngredientDto ingredient = ingredientService.getById(Long.valueOf(selectedIngredient));
+                    IngredientInCulinaryNoteDto ingredientInCulinaryNoteDto =
+                            new IngredientInCulinaryNoteDto(ingredient, culinaryNote, unitOfMeasurement, amount);
+                    ingredientInCulinaryNoteService.create(ingredientInCulinaryNoteDto);
+                }
+            }
+            validator.validate(culinaryNote);
+            culinaryNoteService.update(culinaryNote);
+            resp.sendRedirect(req.getContextPath() + "/culinaryNoteDetail?idCulinaryNote=" + culinaryNote.getIdCulinaryNote());
+        } catch (Exception e) {
+            String message = e.getMessage();
+            logger.error(message);
+            req.setAttribute("error", message);
+            doGet(req, resp);
         }
-
-        for (String selectedIngredient : selectedIngredients) {
-            double amount = Double.parseDouble(req.getParameter("amount_" + selectedIngredient));
-            UnitOfMeasurement unitOfMeasurement = UnitOfMeasurement.valueOf(req.getParameter("unit_" + selectedIngredient));
-            IngredientDto ingredient = ingredientService.getById(Long.valueOf(selectedIngredient));
-            IngredientInCulinaryNoteDto ingredientInCulinaryNoteDto =
-                    new IngredientInCulinaryNoteDto(ingredient, culinaryNote, unitOfMeasurement, amount);
-            ingredientInCulinaryNoteService.create(ingredientInCulinaryNoteDto);
-        }
-
-        culinaryNoteService.update(culinaryNote);
-
-        resp.sendRedirect(req.getContextPath() + "/culinaryNoteDetail?idCulinaryNote=" + id);
     }
 }
 

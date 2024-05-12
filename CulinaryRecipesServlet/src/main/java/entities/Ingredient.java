@@ -9,4 +9,8 @@ import lombok.*;
 public class Ingredient {
     Long idIngredient;
     String name;
+
+    public Ingredient(String name) {
+        this.name = name;
+    }
 }

@@ -18,4 +18,12 @@ public class UserDto {
     private String lastName;
     private String password;
     private String email;
+
+    public UserDto(UserRole role, String firstName, String lastName, String password, String email) {
+        this.role = role;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.email = email;
+    }
 }

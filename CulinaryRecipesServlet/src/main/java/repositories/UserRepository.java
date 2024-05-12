@@ -10,11 +10,10 @@ import java.util.List;
 import exceptions.EmailAlreadyTakenException;
 import utils.ConnectionManager;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 
 public class UserRepository {
-    private static final Logger logger = LogManager.getLogger(UserRepository.class);
+    private static final Logger logger = Logger.getLogger(UserRepository.class);
     private final PasswordHasher passwordHasher = new PasswordHasher();
     public static final String CREATE_USER = """
             INSERT INTO users(role, name, surname, password, email)
@@ -115,7 +114,7 @@ public class UserRepository {
             return null;
         } catch (SQLException e) {
             logger.error(e.getMessage());
-            throw new RuntimeException(e);
+            throw new RuntimeException("Wrong email or password");
         }
     }
 

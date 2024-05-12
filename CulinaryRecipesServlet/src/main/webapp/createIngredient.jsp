@@ -9,7 +9,10 @@
         <form action="${pageContext.request.contextPath}/createIngredient" method="post">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required/><br/><br/>
-            <input type="submit" value="Create"/>
+            <c:if test="${not empty requestScope.error}">
+                                <p style="color: red;"><c:out value="${requestScope.error}"/></p>
+            </c:if>
+            <input type="submit" value="create"/>
         </form>
     </c:if>
 </body>

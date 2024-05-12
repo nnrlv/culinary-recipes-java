@@ -35,6 +35,10 @@
             <label for="${category}">${category}</label><br/>
         </c:forEach>
 
+        <c:if test="${not empty requestScope.error}">
+                    <p style="color: red;"><c:out value="${requestScope.error}"/></p>
+        </c:if>
+
         <input type="submit" value="Create"/>
     </form>
 </body>

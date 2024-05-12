@@ -76,11 +76,6 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testGetByEmailWithEmptyEmail() {
-        assertThrows(IllegalArgumentException.class, () -> userService.getByEmail(""));
-    }
-
-    @Test
     public void testUpdateUser() {
         UserDto userDto = new UserDto(null, UserRole.USER, "name", "surname",
                 "password", "email");

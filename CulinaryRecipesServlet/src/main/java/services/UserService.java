@@ -18,10 +18,11 @@ public class UserService {
         return userRepository.getAll().stream().map(userMapper::map).toList();
     }
     public UserDto getByEmail(String email) {
-        if (email.isEmpty()) {
-            throw new IllegalArgumentException("Email can't empty");
+        try {
+            return userMapper.map(userRepository.getByEmail(email));
+        } catch (Exception e) {
+            throw new RuntimeException("Wrong email or password");
         }
-        return userMapper.map(userRepository.getByEmail(email));
     }
     public void updateUser(UserDto userDto) {
         userRepository.update(userMapper.map(userDto));

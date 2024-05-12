@@ -62,10 +62,10 @@
         </label>
         <br>
         <button type="submit">Authorize</button>
-        <c:if test="${not empty requestScope.message}">
-            <div class="message"><c:out value="${requestScope.message}"/></div>
-        </c:if>
     </form>
+    <c:if test="${not empty requestScope.error}">
+        <p style="color: red;"><c:out value="${requestScope.error}"/></p>
+    </c:if>
     <form action="${pageContext.request.contextPath}/register" method="get">
         <button type="submit" class="register-btn">Register</button>
     </form>

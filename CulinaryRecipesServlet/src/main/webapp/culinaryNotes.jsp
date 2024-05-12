@@ -64,15 +64,13 @@
 <div class="auth-button-container">
     <c:choose>
         <c:when test="${not empty sessionScope.user}">
-            <!-- If the user is authenticated, show the "Logout" button -->
             <p>Welcome, <c:out value="${sessionScope.user.email}"/></p>
             <form action="${pageContext.request.contextPath}/logout" method="get">
                 <input type="submit" value="Logout" class="auth-button"/>
             </form>
         </c:when>
         <c:otherwise>
-            <!-- If the user is not authenticated, show the "Login" button -->
-            <form action="${pageContext.request.contextPath}/login" method="post">
+            <form action="${pageContext.request.contextPath}/login" method="get">
                 <input type="submit" value="Login" class="auth-button"/>
             </form>
         </c:otherwise>

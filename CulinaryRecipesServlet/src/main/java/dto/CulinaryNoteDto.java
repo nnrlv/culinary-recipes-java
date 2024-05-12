@@ -1,5 +1,6 @@
 package dto;
 
+import entities.User;
 import lombok.*;
 
 import java.util.List;
@@ -20,4 +21,13 @@ public class CulinaryNoteDto {
     private String name;
     private String description;
     private String instructions;
+
+    public CulinaryNoteDto(List<Category> categories,
+                           UserDto user, String name, String description, String instructions) {
+        this.categories = categories;
+        this.user = user;
+        this.name = name;
+        this.description = description;
+        this.instructions = instructions;
+    }
 }

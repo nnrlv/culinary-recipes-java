@@ -7,12 +7,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mappers.IngredientMapper;
+import org.apache.log4j.Logger;
 import repositories.IngredientRepository;
 import services.IngredientService;
 import utils.JspHelper;
 import utils.UrlPathHelper;
+import validators.IngredientValidator;
 
 import java.io.IOException;
+
+import static utils.UrlPathHelper.INGREDIENTS;
 
 @WebServlet(UrlPathHelper.INGREDIENT_CREATE)
 public class CreateIngredientServlet extends HttpServlet {
@@ -20,6 +24,10 @@ public class CreateIngredientServlet extends HttpServlet {
             new IngredientRepository(),
             new IngredientMapper()
     );
+
+    private  final Logger logger = Logger.getLogger(HttpServlet.class);
+
+    private final IngredientValidator validator = new IngredientValidator();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,10 +37,16 @@ public class CreateIngredientServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String name = req.getParameter("name");
-        IngredientDto ingredient = new IngredientDto(null, name);
-
-        ingredientService.create(ingredient);
-
-        resp.sendRedirect(req.getContextPath() + UrlPathHelper.INGREDIENTS);
+        try {
+            IngredientDto ingredient = new IngredientDto(name);
+            validator.validate(ingredient);
+            ingredientService.create(ingredient);
+            resp.sendRedirect(req.getContextPath() + INGREDIENTS);
+        } catch (Exception e) {
+            String message = e.getMessage();
+            logger.error(message);
+            req.setAttribute("error", message);
+            doGet(req, resp);
+        }
     }
 }

@@ -13,8 +13,8 @@ import mappers.UserMapper;
 import services.UserService;
 import utils.JspHelper;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
+import validators.RegisterUserValidator;
 
 import java.io.IOException;
 
@@ -23,13 +23,15 @@ import static utils.UrlPathHelper.LOGIN;
 
 @WebServlet(REGISTER)
 public class RegisterUserServlet extends HttpServlet {
-    private static final Logger logger = LogManager.getLogger(RegisterUserServlet.class);
+    private static final Logger logger = Logger.getLogger(RegisterUserServlet.class);
     private static final UserService userService = new UserService(
             new UserRepository(),
             new UserMapper()
     );
+
+    private final RegisterUserValidator validator = new RegisterUserValidator();
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IllegalArgumentException {
         req.getRequestDispatcher(JspHelper.get("register")).forward(req, resp);
     }
 
@@ -41,14 +43,14 @@ public class RegisterUserServlet extends HttpServlet {
         String email = req.getParameter("email");
 
         try {
-            userService.create(
-                    new UserDto(null, UserRole.USER, firstName, lastName, password, email)
-            );
+            UserDto user = new UserDto(UserRole.USER, firstName, lastName, password, email);
+            validator.validate(user);
+            userService.create(user);
             resp.sendRedirect(req.getContextPath() + LOGIN);
-        } catch (EmailAlreadyTakenException e) {
-            logger.error(e.getMessage());
+        } catch (EmailAlreadyTakenException | IllegalArgumentException e) {
             String message = e.getMessage();
-            req.setAttribute("message", message);
+            logger.error(message);
+            req.setAttribute("error", message);
             req.getRequestDispatcher(JspHelper.get("register")).forward(req, resp);
         }
     }

@@ -1,16 +1,18 @@
 package dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 @Builder
 public class IngredientDto {
     Long idIngredient;
     String name;
+
+    public IngredientDto(String name) {
+        this.name = name;
+    }
 }
